@@ -1,0 +1,15 @@
+backend/.env
+backend/__pycache__/
+backend/venv/
+frontend/.next/
+frontend/node_modules/
+.git/
+.env
+.env.local
+*.db
+*.sqlite3
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+*.log

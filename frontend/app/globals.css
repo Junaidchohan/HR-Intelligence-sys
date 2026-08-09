@@ -1,0 +1,568 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #09090b; /* bg-zinc-950 */
+  --panel: rgba(20, 20, 23, 0.7);
+  --border: rgba(63, 63, 70, 0.4);
+  --border-glow: rgba(91, 141, 239, 0.4);
+  --text: #f4f4f5;
+  --muted: #a1a1aa;
+  --accent: #3b82f6; /* Apple/SpaceX blue glow */
+  --accent-glow: rgba(59, 130, 246, 0.5);
+  --good: #10b981;
+  --good-glow: rgba(16, 185, 129, 0.4);
+  --warn: #f59e0b;
+  --warn-glow: rgba(245, 158, 11, 0.4);
+  --bad: #ef4444;
+  --bad-glow: rgba(239, 68, 68, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.04) 0px, transparent 50%);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+/* Glassmorphism Navigation */
+.nav {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding: 16px 40px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(9, 9, 11, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.nav a:hover, .nav a.active {
+  color: var(--text);
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.brand {
+  font-weight: 700;
+  color: var(--text);
+  margin-right: auto;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #fff 0%, var(--muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glassmorphism Cards */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.card:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 8px 32px 0 rgba(59, 130, 246, 0.1);
+}
+
+/* Form Inputs */
+input, select, textarea {
+  background: rgba(20, 20, 23, 0.9);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Futuristic Buttons */
+button {
+  background: linear-gradient(135deg, #6366f1 0%, #9333ea 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+  transition: all 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #9333ea 0%, #6366f1 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.5);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+button.secondary {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  box-shadow: none;
+}
+
+button.secondary:hover {
+  background: rgba(51, 65, 85, 0.9);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: none;
+}
+
+/* Citation pills */
+.citation-pill {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 6px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.citation-pill:hover {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Skill pills */
+.skill-pill {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-size: 12px;
+  margin: 4px 6px 4px 0;
+  font-weight: 500;
+}
+
+.score-badge {
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.score-strong { background: rgba(16, 185, 129, 0.15); color: var(--good); border: 1px solid var(--good); }
+.score-possible { background: rgba(245, 158, 11, 0.15); color: var(--warn); border: 1px solid var(--warn); }
+.score-weak, .score-not_a { background: rgba(239, 68, 68, 0.15); color: var(--bad); border: 1px solid var(--bad); }
+
+/* Unified tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+th, td {
+  text-align: left;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 12px;
+}
+
+tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Circular Progress Indicator */
+.score-circle-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-circle-svg {
+  transform: rotate(-90deg);
+  width: 120px;
+  height: 120px;
+}
+
+.score-circle-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 8;
+}
+
+.score-circle-progress {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.score-circle-text {
+  position: absolute;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+h1, h2, h3, h4 {
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 32px;
+  background: linear-gradient(135deg, #fff 30%, var(--muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 24px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+@keyframes glowPulse {
+  0% {
+    filter: drop-shadow(0 0 8px var(--good-glow));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px var(--good-glow)) drop-shadow(0 0 4px var(--good));
+  }
+  100% {
+    filter: drop-shadow(0 0 8px var(--good-glow));
+  }
+}
+.glow-pulse {
+  animation: glowPulse 2s infinite ease-in-out;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+.animate-shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+/* ─── Nav link helper class ─────────────────────────────────────── */
+.nav-link {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.nav-link:hover,
+.nav-link.active {
+  color: var(--text);
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* ─── Desktop layout helpers ────────────────────────────────────── */
+.nav-links-desktop {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.nav-auth-desktop {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ─── Hamburger button — hidden on desktop ─────────────────────── */
+.hamburger {
+  display: none;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: var(--text);
+  padding: 6px;
+  margin-left: auto;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.hamburger:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ─── Mobile dropdown menu ─────────────────────────────────────── */
+.mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(9, 9, 11, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 12px 24px 20px;
+  gap: 4px;
+  z-index: 99;
+  animation: fadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.mobile-menu .nav-link {
+  padding: 10px 0;
+  font-size: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.mobile-menu-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 8px 0;
+}
+
+.mobile-menu-btn {
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  padding: 10px 16px;
+  margin: 0;
+}
+
+/* ─── Table overflow wrapper for mobile ───────────────────────── */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ─── Media Queries ──────────────────────────────────────────── */
+
+/* === Tablet (max-width: 768px / md breakpoint) === */
+@media (max-width: 768px) {
+  /* Nav: hide desktop links, show hamburger */
+  .nav {
+    padding: 12px 20px;
+    position: relative;
+  }
+
+  .nav-links-desktop {
+    display: none;
+  }
+
+  .nav-auth-desktop {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Container padding */
+  .container {
+    padding: 24px 16px;
+  }
+
+  /* Headings */
+  h1 {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  /* Cards */
+  .card {
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+
+  /* Tables — force horizontal scroll */
+  table {
+    min-width: 540px;
+  }
+
+  th, td {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  /* Buttons */
+  button {
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 10px;
+  }
+
+  /* Inputs */
+  input, select, textarea {
+    font-size: 14px;
+    padding: 9px 12px;
+  }
+
+  /* Score circle */
+  .score-circle-container,
+  .score-circle-svg {
+    width: 90px;
+    height: 90px;
+  }
+
+  .score-circle-text {
+    font-size: 18px;
+  }
+}
+
+/* === Mobile (max-width: 480px / sm breakpoint) === */
+@media (max-width: 480px) {
+  .nav {
+    padding: 10px 16px;
+  }
+
+  .brand {
+    font-size: 13px;
+  }
+
+  .container {
+    padding: 16px 12px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  h2 {
+    font-size: 17px;
+  }
+
+  h3 {
+    font-size: 15px;
+  }
+
+  .card {
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  th, td {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  button {
+    font-size: 12px;
+    padding: 8px 14px;
+  }
+
+  .skill-pill {
+    font-size: 11px;
+    padding: 2px 10px;
+  }
+
+  .score-circle-container,
+  .score-circle-svg {
+    width: 72px;
+    height: 72px;
+  }
+
+  .score-circle-text {
+    font-size: 15px;
+  }
+}
+
+

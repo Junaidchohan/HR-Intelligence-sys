@@ -1,0 +1,25 @@
+{
+  "query": "Jane Doe",
+  "author": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "papers": [
+    {
+      "arxiv_id": "2301.00001",
+      "title": "Deep Learning Architectures for Natural Language Processing",
+      "authors": ["Jane Doe", "John Smith"],
+      "published": "2023-01-15T10:00:00Z",
+      "summary": "This paper presents novel deep learning architectures using PyTorch and Transformer models for scalable NLP tasks.",
+      "pdf_url": "https://arxiv.org/pdf/2301.00001.pdf",
+      "categories": ["cs.CL", "cs.AI"]
+    },
+    {
+      "arxiv_id": "2305.00002",
+      "title": "Efficient Computer Vision Models using PyTorch and Docker",
+      "authors": ["Jane Doe"],
+      "published": "2023-05-20T14:30:00Z",
+      "summary": "An empirical study of lightweight computer vision models deployed via Docker and Kubernetes.",
+      "pdf_url": "https://arxiv.org/pdf/2305.00002.pdf",
+      "categories": ["cs.CV", "cs.AI"]
+    }
+  ]
+}

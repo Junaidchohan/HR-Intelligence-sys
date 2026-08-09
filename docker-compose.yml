@@ -1,0 +1,52 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=sqlite:////data/talent.db
+    volumes:
+      # CHANGED: Mapped to a local folder so you can easily see the database file on Windows
+      - ./backend/data:/data
+    ports:
+      - "8000:8000"
+    # Adds a health check so the frontend waits for the backend to be ready
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.worker
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=sqlite:////data/talent.db
+    volumes:
+      # CHANGED: Same local mapping as the backend
+      - ./backend/data:/data
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      # NOTE: If you use "localhost" here inside Docker, it refers to the container itself.
+      # If the frontend cannot connect, try changing this to "http://backend:8000"
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  backend_data:

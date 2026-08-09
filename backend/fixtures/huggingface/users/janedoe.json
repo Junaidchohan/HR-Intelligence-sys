@@ -1,0 +1,29 @@
+{
+  "username": "janedoe",
+  "full_name": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "bio": "AI Researcher building PyTorch NLP models on HuggingFace.",
+  "profile_url": "https://huggingface.co/janedoe",
+  "models": [
+    {
+      "id": "janedoe/bert-base-nlp-v2",
+      "name": "bert-base-nlp-v2",
+      "downloads": 15420,
+      "likes": 320,
+      "pipeline_tag": "text-classification",
+      "tags": ["pytorch", "transformers", "nlp", "python"],
+      "lastModified": "2023-08-10T12:00:00Z",
+      "url": "https://huggingface.co/janedoe/bert-base-nlp-v2"
+    },
+    {
+      "id": "janedoe/vision-transformer-fine-tuned",
+      "name": "vision-transformer-fine-tuned",
+      "downloads": 8900,
+      "likes": 145,
+      "pipeline_tag": "image-classification",
+      "tags": ["pytorch", "computer-vision", "deep learning"],
+      "lastModified": "2023-11-05T09:15:00Z",
+      "url": "https://huggingface.co/janedoe/vision-transformer-fine-tuned"
+    }
+  ]
+}

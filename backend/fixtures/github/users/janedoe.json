@@ -1,0 +1,10 @@
+{
+  "login": "janedoe",
+  "id": 900123,
+  "name": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "bio": "Frontend engineer specializing in React and TypeScript. Some Next.js too.",
+  "location": "Remote",
+  "blog": "",
+  "html_url": "https://github.com/janedoe"
+}

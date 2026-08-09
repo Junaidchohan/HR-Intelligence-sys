@@ -1,0 +1,23 @@
+[
+  {
+    "name": "hello-world",
+    "html_url": "https://github.com/octocat/hello-world",
+    "description": "A FastAPI service deployed on Kubernetes",
+    "stargazers_count": 42,
+    "language": "Python"
+  },
+  {
+    "name": "distributed-queue",
+    "html_url": "https://github.com/octocat/distributed-queue",
+    "description": "A Go implementation of a distributed job queue using Kafka",
+    "stargazers_count": 128,
+    "language": "Go"
+  },
+  {
+    "name": "infra",
+    "html_url": "https://github.com/octocat/infra",
+    "description": "Terraform + Docker + Kubernetes infrastructure as code",
+    "stargazers_count": 15,
+    "language": "HCL"
+  }
+]

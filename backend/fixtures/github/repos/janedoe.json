@@ -1,0 +1,16 @@
+[
+  {
+    "name": "design-system",
+    "html_url": "https://github.com/janedoe/design-system",
+    "description": "A React + TypeScript component library",
+    "stargazers_count": 300,
+    "language": "TypeScript"
+  },
+  {
+    "name": "portfolio-site",
+    "html_url": "https://github.com/janedoe/portfolio-site",
+    "description": "Personal site built with Next.js",
+    "stargazers_count": 12,
+    "language": "TypeScript"
+  }
+]
