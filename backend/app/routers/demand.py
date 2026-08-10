@@ -157,3 +157,64 @@ def trigger_recompute_urgency(
     updated_count = recompute_urgency_job(db=db)
     log_action(db, action="manual_recompute_urgency", entity_type="opportunity", entity_id="all", user_id=user.id)
     return {"status": "success", "updated_opportunities": updated_count}
+
+
+@router.get("/command-center/matches")
+def get_command_center_matches(
+    urgency_band: Optional[str] = Query(None, description="Filter by urgency band, e.g. 'Action now'"),
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    import sqlalchemy
+    from app.models import Candidate, Screening
+
+    query = db.query(Opportunity)
+    if urgency_band:
+        query = query.filter(Opportunity.urgency_band == urgency_band)
+    
+    opportunities = query.order_by(Opportunity.created_at.desc()).all()
+    results = []
+
+    for opp in opportunities:
+        company = db.get(Company, opp.company_id)
+        # Find candidates screened for this archetype or general top candidates
+        screenings = (
+            db.query(Screening)
+            .order_by(Screening.overall_score.desc())
+            .limit(10)
+            .all()
+        )
+
+        matched_candidates = []
+        seen_cand_ids = set()
+        for s in screenings:
+            if s.candidate_id in seen_cand_ids:
+                continue
+            seen_cand_ids.add(s.candidate_id)
+            c = db.get(Candidate, s.candidate_id)
+            if c:
+                matched_candidates.append({
+                    "screening_id": s.id,
+                    "candidate_id": c.id,
+                    "full_name": c.full_name or f"Candidate #{c.id}",
+                    "location": c.location,
+                    "overall_score": s.overall_score,
+                    "recommendation": s.recommendation,
+                    "summary": s.summary,
+                    "skills": c.skills or [],
+                    "confidence_score": s.confidence_score,
+                })
+
+        results.append({
+            "opportunity_id": opp.id,
+            "company_id": opp.company_id,
+            "company_name": company.name if company else "Unknown",
+            "company_tier": company.tier if company else "B",
+            "role_archetype": opp.role_archetype,
+            "days_open": opp.days_open,
+            "urgency_band": opp.urgency_band,
+            "first_seen_at": opp.first_seen_at.isoformat() if opp.first_seen_at else "",
+            "matching_candidates": matched_candidates,
+        })
+
+    return results

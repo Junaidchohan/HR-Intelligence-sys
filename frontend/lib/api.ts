@@ -220,6 +220,19 @@ export const api = {
   createOpportunity: (payload: OpportunityCreatePayload) =>
     request<Opportunity>("/opportunities", { method: "POST", body: JSON.stringify(payload) }),
   deleteOpportunity: (id: number) => request<void>(`/opportunities/${id}`, { method: "DELETE" }),
+  recomputeUrgency: () => request<{ status: string; updated_opportunities: number }>("/opportunities/recompute-urgency", { method: "POST" }),
+
+  getCommandCenterMatches: (urgency_band?: string) =>
+    request<any[]>(`/command-center/matches${urgency_band ? `?urgency_band=${encodeURIComponent(urgency_band)}` : ""}`),
+
+  createTouch: (payload: { entity_type: string; entity_id: number; channel: string; outcome: string; notes?: string }) =>
+    request<any>("/touches", { method: "POST", body: JSON.stringify(payload) }),
+  listTouches: (entity_type?: string, entity_id?: number) => {
+    const params = new URLSearchParams();
+    if (entity_type) params.append("entity_type", entity_type);
+    if (entity_id) params.append("entity_id", String(entity_id));
+    return request<any[]>(`/touches?${params.toString()}`);
+  },
 
   runBatchScreening: async (rubric_id: number, usernames: string[], onProgress: (event: any) => void) => {
 

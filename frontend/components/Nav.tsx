@@ -6,12 +6,13 @@ import { useRouter, usePathname } from "next/navigation";
 import { clearToken, getToken } from "@/lib/api";
 
 const NAV_LINKS = [
-  { href: "/candidates", label: "Candidates" },
-  { href: "/companies",  label: "Companies"  },
-  { href: "/rubrics",    label: "Rubrics"    },
-  { href: "/jobs",       label: "Jobs"        },
-  { href: "/batch",      label: "Batch"       },
-  { href: "/settings",   label: "Settings"    },
+  { href: "/command-center", label: "Command Center" },
+  { href: "/candidates",     label: "Candidates"     },
+  { href: "/companies",      label: "Companies"      },
+  { href: "/rubrics",        label: "Rubrics"        },
+  { href: "/jobs",           label: "Jobs"           },
+  { href: "/batch",          label: "Batch"          },
+  { href: "/settings",       label: "Settings"       },
 ];
 
 export default function Nav() {
