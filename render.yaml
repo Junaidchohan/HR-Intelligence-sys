@@ -46,6 +46,3 @@ services:
       # Baked into the Next.js bundle at Docker build time (see Dockerfile ARG)
       - key: NEXT_PUBLIC_API_BASE_URL
         value: "https://hr-intelligence-sys.onrender.com"
-
-      - key: PORT
-        value: "3000"
