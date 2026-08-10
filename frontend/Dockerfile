@@ -2,7 +2,8 @@ FROM node:20-slim AS build
 WORKDIR /app
 
 # NEXT_PUBLIC_ vars are baked in at build time — must be declared as ARG
-ARG NEXT_PUBLIC_API_BASE_URL
+# Default = production backend URL (used when Render doesn't pass it as a build arg)
+ARG NEXT_PUBLIC_API_BASE_URL=https://hr-intelligence-sys.onrender.com
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 
 COPY package.json ./
