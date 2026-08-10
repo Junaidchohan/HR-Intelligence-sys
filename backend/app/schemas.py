@@ -180,3 +180,45 @@ class IntegrationSettingsOut(BaseModel):
 class BatchScreenRequest(BaseModel):
     rubric_id: int
     usernames: list[str]
+
+
+class OpportunityCreate(BaseModel):
+    company_id: int
+    role_archetype: str
+    urgency_band: Optional[str] = "Monitor"
+
+
+class OpportunityOut(BaseModel):
+    id: int
+    company_id: int
+    role_archetype: str
+    first_seen_at: datetime.datetime
+    days_open: int = 0
+    urgency_band: Optional[str] = "Monitor"
+    created_at: datetime.datetime
+    model_config = {"from_attributes": True}
+
+
+class CompanyCreate(BaseModel):
+    name: str
+    domain: Optional[str] = None
+    funding_stage: Optional[str] = "Series A"
+    headcount: Optional[int] = None
+    growth_rate: Optional[float] = None
+    tier: Optional[str] = "B"
+
+
+class CompanyOut(BaseModel):
+    id: int
+    name: str
+    domain: Optional[str] = None
+    funding_stage: Optional[str] = None
+    headcount: Optional[int] = None
+    growth_rate: Optional[float] = None
+    tier: Optional[str] = "B"
+    enrichment_payload: dict[str, Any] = {}
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+    opportunities: list[OpportunityOut] = []
+    model_config = {"from_attributes": True}
+

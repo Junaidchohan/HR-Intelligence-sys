@@ -179,3 +179,35 @@ class IntegrationSettings(Base):
     created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=now)
     updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=now, onupdate=now)
 
+
+class Company(Base):
+    """Demand side: Company entity record."""
+    __tablename__ = "companies"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(255), index=True)
+    domain: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    funding_stage: Mapped[str | None] = mapped_column(String(64), nullable=True)  # Series A, Series B, Series C, Series D, Seed, Bootstrapped
+    headcount: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    growth_rate: Mapped[float | None] = mapped_column(Float, nullable=True)  # Growth percentage e.g. 25.0
+    tier: Mapped[str | None] = mapped_column(String(16), nullable=True, default="B")  # S / A / B / C
+    enrichment_payload: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=now)
+    updated_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=now, onupdate=now)
+
+    opportunities: Mapped[list["Opportunity"]] = relationship(back_populates="company", cascade="all, delete-orphan")
+
+
+class Opportunity(Base):
+    """Demand side: Open role opportunity at a company."""
+    __tablename__ = "opportunities"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    company_id: Mapped[int] = mapped_column(ForeignKey("companies.id"))
+    role_archetype: Mapped[str] = mapped_column(String(255))  # Agentic Engineer, Applied AI Engineer, etc.
+    first_seen_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=now)
+    days_open: Mapped[int] = mapped_column(Integer, default=0)
+    urgency_band: Mapped[str | None] = mapped_column(String(64), nullable=True, default="Monitor")  # Monitor | Warming | Action now | Follow-up
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=now)
+
+    company: Mapped["Company"] = relationship(back_populates="opportunities")
+
+

@@ -115,7 +115,47 @@ export interface Screening {
   created_at: string;
 }
 
+export interface Opportunity {
+  id: number;
+  company_id: number;
+  role_archetype: string;
+  first_seen_at: string;
+  days_open: number;
+  urgency_band: string | null;
+  created_at: string;
+}
+
+export interface Company {
+  id: number;
+  name: string;
+  domain: string | null;
+  funding_stage: string | null;
+  headcount: number | null;
+  growth_rate: number | null;
+  tier: string | null;
+  enrichment_payload: Record<string, any>;
+  created_at: string;
+  updated_at: string;
+  opportunities: Opportunity[];
+}
+
+export interface CompanyCreatePayload {
+  name: string;
+  domain?: string;
+  funding_stage?: string;
+  headcount?: number;
+  growth_rate?: number;
+  tier?: string;
+}
+
+export interface OpportunityCreatePayload {
+  company_id: number;
+  role_archetype: string;
+  urgency_band?: string;
+}
+
 export const api = {
+
   login: (email: string, password: string) =>
     request<{ access_token: string; token_type: string }>("/auth/login", {
       method: "POST",
@@ -166,7 +206,19 @@ export const api = {
     request<Rubric>(`/rubrics/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
   deleteRubric: (id: number) => request<void>(`/rubrics/${id}`, { method: "DELETE" }),
 
+  listCompanies: () => request<Company[]>("/companies"),
+  getCompany: (id: number) => request<Company>(`/companies/${id}`),
+  createCompany: (payload: CompanyCreatePayload) =>
+    request<Company>("/companies", { method: "POST", body: JSON.stringify(payload) }),
+  deleteCompany: (id: number) => request<void>(`/companies/${id}`, { method: "DELETE" }),
+
+  listOpportunities: () => request<Opportunity[]>("/opportunities"),
+  createOpportunity: (payload: OpportunityCreatePayload) =>
+    request<Opportunity>("/opportunities", { method: "POST", body: JSON.stringify(payload) }),
+  deleteOpportunity: (id: number) => request<void>(`/opportunities/${id}`, { method: "DELETE" }),
+
   runBatchScreening: async (rubric_id: number, usernames: string[], onProgress: (event: any) => void) => {
+
     const token = getToken();
     const headers: Record<string, string> = {
       "Content-Type": "application/json",

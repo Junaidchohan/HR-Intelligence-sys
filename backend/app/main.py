@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.security import hash_password
 from app.db import Base, SessionLocal, engine, migrate_schema
 from app.models import User, UserRole
-from app.routers import auth, background, candidates, jobs, screening, settings as settings_router
+from app.routers import auth, background, candidates, demand, jobs, screening, settings as settings_router
 from app.config import settings
 
 app = FastAPI(title="AI Talent Intelligence Platform", version="0.1.0")
@@ -27,9 +27,11 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(candidates.router)
 app.include_router(jobs.router)
+app.include_router(demand.router)
 app.include_router(screening.router)
 app.include_router(background.router)
 app.include_router(settings_router.router)
+
 
 
 @app.on_event("startup")
