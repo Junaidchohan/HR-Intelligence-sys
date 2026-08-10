@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     shutdown_scheduler()
 
 
-app = FastAPI(title="AI Talent Intelligence Platform", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="AI Talent Intelligence Platform", version="0.2.0", lifespan=lifespan)
 
 _EXTRA_ORIGINS = [o.strip() for o in os.environ.get("FRONTEND_URL", "").split(",") if o.strip()]
 
@@ -74,4 +74,4 @@ def _ensure_admin_user() -> None:
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {"status": "ok", "version": "0.2.0", "features": ["touches", "command-center", "rubric-versioning", "urgency-scheduler"]}

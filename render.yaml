@@ -48,4 +48,4 @@ services:
       # Runtime var — Next.js reads this at server startup for the rewrite proxy.
       # No build-time baking needed anymore!
       - key: BACKEND_URL
-        value: "https://hr-intelligence-sys.onrender.com"
+        value: "https://hr-talent-intelligence-backend.onrender.com"
