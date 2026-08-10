@@ -1,4 +1,17 @@
-const API_BASE = "http://localhost:8000";
+// Resolve the backend URL:
+// 1. Use the baked-in build-time env var if available
+// 2. If deployed on Render (non-localhost), use the known production backend
+// 3. Otherwise fall back to local dev backend
+function resolveApiBase(): string {
+  const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (envUrl && envUrl !== "" && !envUrl.includes("localhost")) return envUrl;
+  if (typeof window !== "undefined" && !window.location.hostname.includes("localhost")) {
+    return "https://hr-intelligence-sys.onrender.com";
+  }
+  return "http://localhost:8000";
+}
+const API_BASE = resolveApiBase();
+
 
 export function getToken(): string | null {
   if (typeof window === "undefined") return null;
