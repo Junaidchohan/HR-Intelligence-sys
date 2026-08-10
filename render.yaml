@@ -6,8 +6,7 @@ services:
 
     buildCommand: pip install -r backend/requirements.txt
     # FIXED: Removed "cd backend". Uses --app-dir to safely point to the app folder.
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir backend
-
+startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir backend --factory
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.0"
