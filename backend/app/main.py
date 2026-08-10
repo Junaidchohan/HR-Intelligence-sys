@@ -1,17 +1,32 @@
 from __future__ import annotations
 
+import os
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.config import settings
 from app.core.security import hash_password
 from app.db import Base, SessionLocal, engine, migrate_schema
+from app.jobs.scheduler import shutdown_scheduler, start_scheduler
 from app.models import User, UserRole
 from app.routers import auth, background, candidates, demand, jobs, screening, settings as settings_router, touches
-from app.config import settings
 
-app = FastAPI(title="AI Talent Intelligence Platform", version="0.1.0")
 
-import os
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    Base.metadata.create_all(bind=engine)
+    migrate_schema()
+    _ensure_admin_user()
+    start_scheduler()
+    yield
+    # Shutdown
+    shutdown_scheduler()
+
+
+app = FastAPI(title="AI Talent Intelligence Platform", version="0.1.0", lifespan=lifespan)
 
 _EXTRA_ORIGINS = [o.strip() for o in os.environ.get("FRONTEND_URL", "").split(",") if o.strip()]
 
@@ -39,14 +54,6 @@ app.include_router(screening.router)
 app.include_router(background.router)
 app.include_router(settings_router.router)
 app.include_router(touches.router)
-
-
-
-@app.on_event("startup")
-def on_startup() -> None:
-    Base.metadata.create_all(bind=engine)
-    migrate_schema()
-    _ensure_admin_user()
 
 
 def _ensure_admin_user() -> None:

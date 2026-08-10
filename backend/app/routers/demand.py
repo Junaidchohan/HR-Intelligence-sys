@@ -146,3 +146,14 @@ def delete_opportunity(
     db.commit()
     log_action(db, action="delete_opportunity", entity_type="opportunity", entity_id=str(opp_id), user_id=user.id)
     return
+
+
+@router.post("/opportunities/recompute-urgency")
+def trigger_recompute_urgency(
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    from app.jobs.scheduler import recompute_urgency_job
+    updated_count = recompute_urgency_job(db=db)
+    log_action(db, action="manual_recompute_urgency", entity_type="opportunity", entity_id="all", user_id=user.id)
+    return {"status": "success", "updated_opportunities": updated_count}
