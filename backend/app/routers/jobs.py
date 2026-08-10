@@ -26,23 +26,23 @@ def create_rubric(payload: RubricCreate, db: Session = Depends(get_db), user: Us
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-    rubric = RubricModel(name=payload.name, criteria=criteria_dicts)
+    rubric = RubricModel(name=payload.name, version=1, parent_rubric_id=None, criteria=criteria_dicts)
     db.add(rubric)
     db.commit()
     db.refresh(rubric)
-    log_action(db, action="create_rubric", entity_type="rubric", entity_id=rubric.id, user_id=user.id)
+    log_action(db, action="create_rubric", entity_type="rubric", entity_id=str(rubric.id), user_id=user.id)
     return rubric
 
 
 @router.get("/rubrics", response_model=list[RubricOut])
 def list_rubrics(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    return db.query(RubricModel).all()
+    return db.query(RubricModel).order_by(RubricModel.name.asc(), RubricModel.version.desc()).all()
 
 
 @router.put("/rubrics/{rubric_id}", response_model=RubricOut)
 def update_rubric(rubric_id: int, payload: RubricCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    rubric = db.get(RubricModel, rubric_id)
-    if not rubric:
+    existing = db.get(RubricModel, rubric_id)
+    if not existing:
         raise HTTPException(status_code=404, detail="Rubric not found")
     criteria_dicts = [c.model_dump() for c in payload.criteria]
     rubric_domain = Rubric(name=payload.name, criteria=[RubricCriterion(**c) for c in criteria_dicts])
@@ -51,12 +51,29 @@ def update_rubric(rubric_id: int, payload: RubricCreate, db: Session = Depends(g
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-    rubric.name = payload.name
-    rubric.criteria = criteria_dicts
+    # Immutable Versioning: Create a NEW Rubric row instead of mutating existing row
+    root_parent_id = existing.parent_rubric_id or existing.id
+    new_version = existing.version + 1
+
+    new_rubric = RubricModel(
+        name=payload.name,
+        version=new_version,
+        parent_rubric_id=root_parent_id,
+        criteria=criteria_dicts,
+    )
+    db.add(new_rubric)
     db.commit()
-    db.refresh(rubric)
-    log_action(db, action="update_rubric", entity_type="rubric", entity_id=rubric.id, user_id=user.id)
-    return rubric
+    db.refresh(new_rubric)
+
+    # Re-link active jobs pointing to the old rubric to point to the new version
+    active_jobs = db.query(JobRequisition).filter(JobRequisition.rubric_id == existing.id).all()
+    for job in active_jobs:
+        job.rubric_id = new_rubric.id
+    if active_jobs:
+        db.commit()
+
+    log_action(db, action="update_rubric_new_version", entity_type="rubric", entity_id=str(new_rubric.id), user_id=user.id)
+    return new_rubric
 
 
 @router.delete("/rubrics/{rubric_id}", status_code=204)

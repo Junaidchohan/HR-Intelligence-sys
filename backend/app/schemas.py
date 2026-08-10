@@ -88,6 +88,8 @@ class RubricCreate(BaseModel):
 class RubricOut(BaseModel):
     id: int
     name: str
+    version: int = 1
+    parent_rubric_id: Optional[int] = None
     criteria: list[dict[str, Any]]
     model_config = {"from_attributes": True}
 

@@ -97,6 +97,8 @@ class Rubric(Base):
     __tablename__ = "rubrics"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(255))
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    parent_rubric_id: Mapped[int | None] = mapped_column(ForeignKey("rubrics.id"), nullable=True)
     criteria: Mapped[list] = mapped_column(JSON, default=list)  # list[{name, weight, required_skills, min_evidence_count, description}]
     created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=now)
 
