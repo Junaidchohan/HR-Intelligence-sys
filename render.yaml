@@ -3,8 +3,6 @@ services:
   - type: web
     name: hr-talent-intelligence-backend
     runtime: python
-    pythonVersion: "3.12"
-
     # No rootDir — CWD stays at repo root for both commands.
     # We cd into backend/ in startCommand so Python can resolve the `app` package.
     buildCommand: pip install -r backend/requirements.txt
@@ -13,8 +11,10 @@ services:
     envVars:
       - key: DATABASE_URL
         value: sqlite:///./talent.db
-
+- key: PYTHON_VERSION
+      value: 3.12.0
       - key: SECRET_KEY
+      
         generateValue: true           # Render auto-generates a secure random value
 
       - key: GITHUB_OFFLINE_FIXTURES
