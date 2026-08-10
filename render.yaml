@@ -44,11 +44,8 @@ services:
     dockerContext: ./frontend
     dockerfilePath: ./frontend/Dockerfile
 
-    # Pass build args so Next.js bakes the correct URL at build time
-    dockerBuildArgs:
-      NEXT_PUBLIC_API_BASE_URL: "https://hr-intelligence-sys.onrender.com"
-
     envVars:
-      # Also set as runtime var (belt-and-suspenders)
-      - key: NEXT_PUBLIC_API_BASE_URL
+      # Runtime var — Next.js reads this at server startup for the rewrite proxy.
+      # No build-time baking needed anymore!
+      - key: BACKEND_URL
         value: "https://hr-intelligence-sys.onrender.com"

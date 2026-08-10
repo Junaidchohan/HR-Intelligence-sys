@@ -1,16 +1,7 @@
-// Resolve the backend URL:
-// 1. Use the baked-in build-time env var if available
-// 2. If deployed on Render (non-localhost), use the known production backend
-// 3. Otherwise fall back to local dev backend
-function resolveApiBase(): string {
-  const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (envUrl && envUrl !== "" && !envUrl.includes("localhost")) return envUrl;
-  if (typeof window !== "undefined" && !window.location.hostname.includes("localhost")) {
-    return "https://hr-intelligence-sys.onrender.com";
-  }
-  return "http://localhost:8000";
-}
-const API_BASE = resolveApiBase();
+// All API calls go to /api/* on the same domain.
+// Next.js (next.config.js rewrites) proxies them server-side to the real backend.
+// This means: no CORS issues, no build-time env var needed.
+const API_BASE = "/api";
 
 
 export function getToken(): string | null {
