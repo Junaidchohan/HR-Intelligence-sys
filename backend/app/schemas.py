@@ -222,3 +222,22 @@ class CompanyOut(BaseModel):
     opportunities: list[OpportunityOut] = []
     model_config = {"from_attributes": True}
 
+
+class TouchCreate(BaseModel):
+    entity_type: str  # candidate | company
+    entity_id: int
+    channel: str  # LinkedIn | Email | Call | Deck | In-Person
+    outcome: str  # Connected | Replied | Interested | No Response | Bounced | Converted
+    notes: Optional[str] = None
+
+
+class TouchOut(BaseModel):
+    id: int
+    entity_type: str
+    entity_id: int
+    channel: str
+    outcome: str
+    notes: Optional[str] = None
+    created_at: datetime.datetime
+    model_config = {"from_attributes": True}
+

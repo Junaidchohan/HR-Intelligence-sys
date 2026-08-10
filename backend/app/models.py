@@ -211,3 +211,15 @@ class Opportunity(Base):
     company: Mapped["Company"] = relationship(back_populates="opportunities")
 
 
+class Touch(Base):
+    """Outreach event tracking channel, timestamp, outcome, and notes for candidates or companies."""
+    __tablename__ = "touches"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    entity_type: Mapped[str] = mapped_column(String(32), index=True)  # candidate | company
+    entity_id: Mapped[int] = mapped_column(Integer, index=True)
+    channel: Mapped[str] = mapped_column(String(64))  # LinkedIn, Email, Call, Deck, In-Person
+    outcome: Mapped[str] = mapped_column(String(128))  # Connected, Replied, Interested, No Response, Bounced, Converted
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime, default=now)
+
+
