@@ -22,6 +22,10 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 
 def hash_password(plain: str) -> str:
+    # FIX: bcrypt has a hard 72-byte limit. Truncate safely to avoid Render deploy crash.
+    if len(plain) > 72:
+        print(f"⚠️ [SECURITY] Password exceeded 72 bytes. Truncating to first 72 bytes to satisfy bcrypt.")
+        plain = plain[:72]
     return pwd_context.hash(plain)
 
 
