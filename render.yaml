@@ -5,8 +5,10 @@ services:
     runtime: python
 
     buildCommand: pip install -r backend/requirements.txt
-    # FIXED: Removed "cd backend". Uses --app-dir to safely point to the app folder.
-startCommand: backend/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir backend      - key: PYTHON_VERSION
+    startCommand: backend/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port $PORT --app-dir backend
+
+    envVars:
+      - key: PYTHON_VERSION
         value: "3.12.0"
 
       - key: DATABASE_URL
