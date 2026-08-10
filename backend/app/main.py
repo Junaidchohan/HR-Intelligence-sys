@@ -11,6 +11,10 @@ from app.config import settings
 
 app = FastAPI(title="AI Talent Intelligence Platform", version="0.1.0")
 
+import os
+
+_EXTRA_ORIGINS = [o.strip() for o in os.environ.get("FRONTEND_URL", "").split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -18,6 +22,9 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "http://localhost:8000",
         "http://127.0.0.1:8000",
+        "https://hr-intelligence-sys-one.vercel.app",        # Vercel production
+        "https://hr-intelligence-sys-frontend.onrender.com", # Render frontend
+        *_EXTRA_ORIGINS,  # Any extra domains via env (e.g. custom domain)
     ],
     allow_credentials=True,
     allow_methods=["*"],
