@@ -3,46 +3,48 @@ services:
   - type: web
     name: hr-talent-intelligence-backend
     runtime: python
+
     # No rootDir — CWD stays at repo root for both commands.
-    # We cd into backend/ in startCommand so Python can resolve the `app` package.
+    # cd into backend/ so Python resolves the `app` package correctly.
     buildCommand: pip install -r backend/requirements.txt
     startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
 
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+
       - key: DATABASE_URL
         value: sqlite:///./talent.db
-- key: PYTHON_VERSION
-      value: 3.12.0
+
       - key: SECRET_KEY
-      
-        generateValue: true           # Render auto-generates a secure random value
+        generateValue: true
 
       - key: GITHUB_OFFLINE_FIXTURES
         value: "false"
 
       - key: GITHUB_TOKEN
-        sync: false                   # paste your token manually in the Render dashboard
+        sync: false
 
       - key: ANTHROPIC_API_KEY
-        sync: false                   # paste your Anthropic key in the Render dashboard
+        sync: false
 
       - key: ADMIN_EMAIL
-        sync: false                   # set in Render dashboard
+        sync: false
 
       - key: ADMIN_PASSWORD
-        sync: false                   # set in Render dashboard
+        sync: false
 
       - key: FRONTEND_URL
-        value: "https://hr-intelligence-sys-frontend.onrender.com"  # update after frontend deploys
+        value: "https://hr-intelligence-sys-frontend.onrender.com"
 
   # ─── Frontend (Next.js via Docker) ─────────────────────────────────────────
   - type: web
     name: hr-intelligence-sys-frontend
     runtime: docker
-    dockerContext: ./frontend          # Docker build context = frontend/ folder
+    dockerContext: ./frontend
     dockerfilePath: ./frontend/Dockerfile
 
     envVars:
-      # Baked into the Next.js bundle at Docker build time (see Dockerfile ARG)
+      # NEXT_PUBLIC_ vars are baked at Docker build time (see Dockerfile ARG)
       - key: NEXT_PUBLIC_API_BASE_URL
         value: "https://hr-intelligence-sys.onrender.com"
