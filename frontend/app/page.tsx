@@ -6,16 +6,16 @@ import { Network, CheckCircle2, Layers, ArrowRight } from "lucide-react";
 export default function LandingPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white font-sans">
-      {/* ─── 1. Background Image with Ultra-Slow Cinematic Zoom Animation ─── */}
+      {/* ─── 1. Background Image with Ultra-Slow Cinematic Zoom (No Blur, Sharp City Lights) ─── */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <div
-          className="absolute inset-0 bg-cover bg-center animate-slow-zoom"
+          className="absolute inset-0 bg-cover bg-center animate-[slowZoom_30s_ease-in-out_infinite]"
           style={{
             backgroundImage: `url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')`,
           }}
         />
-        {/* ─── 2. Heavy Glassmorphism Dark Overlay ─────────────────────────── */}
-        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl" />
+        {/* ─── 2. Lighter Dark Overlay (bg-slate-900/30, no backdrop-blur on background) ─── */}
+        <div className="absolute inset-0 bg-slate-900/30" />
       </div>
 
       {/* ─── Content Wrapper ──────────────────────────────────────────────── */}
@@ -64,23 +64,24 @@ export default function LandingPage() {
 
         {/* ─── Main Hero & Features Container ──────────────────────────────── */}
         <main className="flex-1 max-w-7xl mx-auto px-6 pt-20 pb-24 flex flex-col justify-center">
-          {/* ─── 4. Hero Section ────────────────────────────────────────────── */}
-          <div className="text-center max-w-4xl mx-auto space-y-6">
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-tight animate-fade-in-up">
+          {/* ─── 4. Hero Section with Soft Backdrop Blur Container for Text Crispness ─── */}
+          <div className="text-center max-w-4xl mx-auto space-y-6 p-8 rounded-3xl bg-slate-900/20 backdrop-blur-sm border border-white/5">
+            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-tight animate-[fadeInUp_0.8s_ease-out]">
               Unified Lead Command & <br />
               <span className="bg-gradient-to-r from-purple-400 via-indigo-300 to-blue-400 bg-clip-text text-transparent">
                 Autonomous Talent Intelligence
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto font-normal leading-relaxed animate-fade-in-up delay-100">
+            <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto font-normal leading-relaxed animate-[fadeInUp_0.8s_ease-out] delay-100">
               Transform high-demand technical hiring with continuous AI entity resolution, verifiable candidate evidence ledgers, and automated demand-supply matching.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up delay-200">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-[fadeInUp_0.8s_ease-out] delay-200">
+              {/* Premium Glow & Breathing Scale Button */}
               <Link
                 href="/signup"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-base px-8 py-4 rounded-xl shadow-lg shadow-purple-500/25 transition-all transform hover:-translate-y-0.5"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-base px-8 py-4 rounded-xl shadow-lg shadow-purple-500/25 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(124,58,237,0.5)]"
               >
                 <span>Start Screening</span>
                 <ArrowRight className="w-5 h-5" />
@@ -97,7 +98,7 @@ export default function LandingPage() {
           {/* ─── 5. Features Section (3 Pillars) ─────────────────────────────── */}
           <div id="features" className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24">
             {/* Pillar 1 */}
-            <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 p-8 rounded-2xl hover:border-purple-500/40 transition-all duration-300 animate-fade-in-up delay-100 shadow-xl group">
+            <div className="bg-slate-900/40 backdrop-blur-sm border border-white/10 p-8 rounded-2xl hover:border-purple-500/40 transition-all duration-300 animate-[fadeInUp_0.8s_ease-out] delay-100 shadow-xl group">
               <Network className="w-8 h-8 text-purple-400 mb-4 group-hover:scale-110 transition-transform" />
               <h3 className="text-xl font-bold text-white mb-2">Talent Graph</h3>
               <p className="text-sm text-gray-300 leading-relaxed">
@@ -106,7 +107,7 @@ export default function LandingPage() {
             </div>
 
             {/* Pillar 2 */}
-            <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 p-8 rounded-2xl hover:border-indigo-500/40 transition-all duration-300 animate-fade-in-up delay-200 shadow-xl group">
+            <div className="bg-slate-900/40 backdrop-blur-sm border border-white/10 p-8 rounded-2xl hover:border-indigo-500/40 transition-all duration-300 animate-[fadeInUp_0.8s_ease-out] delay-200 shadow-xl group">
               <CheckCircle2 className="w-8 h-8 text-indigo-400 mb-4 group-hover:scale-110 transition-transform" />
               <h3 className="text-xl font-bold text-white mb-2">Auditable Screening</h3>
               <p className="text-sm text-gray-300 leading-relaxed">
@@ -115,7 +116,7 @@ export default function LandingPage() {
             </div>
 
             {/* Pillar 3 */}
-            <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 p-8 rounded-2xl hover:border-blue-500/40 transition-all duration-300 animate-fade-in-up delay-300 shadow-xl group">
+            <div className="bg-slate-900/40 backdrop-blur-sm border border-white/10 p-8 rounded-2xl hover:border-blue-500/40 transition-all duration-300 animate-[fadeInUp_0.8s_ease-out] delay-300 shadow-xl group">
               <Layers className="w-8 h-8 text-blue-400 mb-4 group-hover:scale-110 transition-transform" />
               <h3 className="text-xl font-bold text-white mb-2">Command Center</h3>
               <p className="text-sm text-gray-300 leading-relaxed">

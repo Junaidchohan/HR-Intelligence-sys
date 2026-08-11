@@ -568,31 +568,22 @@ h1 {
 /* ─── Landing Page Animations ────────────────────────────────────────────────── */
 
 @keyframes slowZoom {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.08);
-  }
+  0% { transform: scale(1.0); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1.0); }
 }
 
 .animate-slow-zoom {
-  animation: slowZoom 30s ease-in-out infinite alternate;
+  animation: slowZoom 30s ease-in-out infinite;
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .delay-100 {
@@ -606,3 +597,4 @@ h1 {
 .delay-300 {
   animation-delay: 300ms;
 }
+
