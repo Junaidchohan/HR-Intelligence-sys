@@ -41,69 +41,83 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="card fade-in" style={{ maxWidth: 420, margin: "80px auto", padding: "40px" }}>
-      <h2 style={{ textAlign: "center", marginBottom: 6, fontWeight: 800, fontSize: 28, letterSpacing: "-0.03em" }}>
-        Create Account
-      </h2>
-      <p className="muted" style={{ textAlign: "center", marginBottom: 32, fontSize: 13 }}>
-        Sign up for Talentbase AI
-      </p>
+    <div className="relative min-h-[calc(100vh-140px)] flex items-center justify-center py-12 px-4 overflow-hidden">
+      {/* ─── Space Wallpaper Background with Slow Zoom ─── */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <div
+          className="absolute inset-0 bg-cover bg-center animate-[slowZoom_30s_ease-in-out_infinite]"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')`,
+          }}
+        />
+        <div className="absolute inset-0 bg-slate-900/30" />
+      </div>
 
-      <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <label style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted)", fontWeight: 600 }}>
-            Email Address
-          </label>
-          <input
-            type="email"
-            required
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{ padding: "12px" }}
-          />
+      {/* ─── Form Card ─── */}
+      <div className="card fade-in relative z-10 w-full" style={{ maxWidth: 420, padding: "40px", backdropFilter: "blur(16px)" }}>
+        <h2 style={{ textAlign: "center", marginBottom: 6, fontWeight: 800, fontSize: 28, letterSpacing: "-0.03em" }}>
+          Create Account
+        </h2>
+        <p className="muted" style={{ textAlign: "center", marginBottom: 32, fontSize: 13 }}>
+          Sign up for Talentbase AI
+        </p>
+
+        <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <label style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted)", fontWeight: 600 }}>
+              Email Address
+            </label>
+            <input
+              type="email"
+              required
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{ padding: "12px" }}
+            />
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <label style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted)", fontWeight: 600 }}>
+              Password
+            </label>
+            <input
+              type="password"
+              required
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={{ padding: "12px" }}
+            />
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <label style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted)", fontWeight: 600 }}>
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              required
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              style={{ padding: "12px" }}
+            />
+          </div>
+
+          <PrimaryButton type="submit" disabled={loading} className="w-full py-3.5 mt-2 text-sm uppercase tracking-wider">
+            {loading ? "Creating Account..." : "Sign Up"}
+          </PrimaryButton>
+
+          {error && <p style={{ color: "var(--bad)", fontSize: 13, textAlign: "center", marginTop: 4 }}>{error}</p>}
+        </form>
+
+        <div style={{ marginTop: 32, paddingTop: 20, borderTop: "1px solid var(--border)", fontSize: 13, textAlign: "center" }}>
+          <span className="muted">Already have an account? </span>
+          <Link href="/login" style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}>
+            Log in
+          </Link>
         </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <label style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted)", fontWeight: 600 }}>
-            Password
-          </label>
-          <input
-            type="password"
-            required
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ padding: "12px" }}
-          />
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <label style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--muted)", fontWeight: 600 }}>
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            required
-            placeholder="••••••••"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            style={{ padding: "12px" }}
-          />
-        </div>
-
-        <PrimaryButton type="submit" disabled={loading} className="w-full py-3.5 mt-2 text-sm uppercase tracking-wider">
-          {loading ? "Creating Account..." : "Sign Up"}
-        </PrimaryButton>
-
-        {error && <p style={{ color: "var(--bad)", fontSize: 13, textAlign: "center", marginTop: 4 }}>{error}</p>}
-      </form>
-
-      <div style={{ marginTop: 32, paddingTop: 20, borderTop: "1px solid var(--border)", fontSize: 13, textAlign: "center" }}>
-        <span className="muted">Already have an account? </span>
-        <Link href="/login" style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}>
-          Log in
-        </Link>
       </div>
     </div>
   );
