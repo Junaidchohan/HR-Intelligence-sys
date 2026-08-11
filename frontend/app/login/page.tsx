@@ -41,11 +41,10 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-black/10" />
       </div>
 
-      {/* ─── Form Container (Dead Center Locked in Place) ─── */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen p-4 bg-transparent">
+      {/* ─── Form Container (Dead Center Locked - 95% Transparent) ─── */}
+      <div className="relative z-10 flex min-h-screen items-center justify-center p-4 bg-transparent">
         <div
-          className="relative z-10 w-full max-w-[420px] p-10 rounded-2xl bg-transparent border border-white/10 shadow-xl backdrop-blur-xl"
-          style={{ backgroundColor: "transparent" }}
+          className="m-auto relative z-10 w-full max-w-[420px] p-10 rounded-2xl bg-slate-900/5 border border-white/10 shadow-2xl backdrop-blur-xl"
         >
           <h2 style={{ textAlign: "center", marginBottom: 6, fontWeight: 800, fontSize: 28, letterSpacing: "-0.03em" }}>Sign in</h2>
           <p className="muted" style={{ textAlign: "center", marginBottom: 32, fontSize: 13 }}>
