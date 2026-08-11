@@ -9,7 +9,7 @@ ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 
 COPY frontend/package.json ./
 RUN npm install
-COPY . .
+COPY frontend/ ./
 RUN npm run build
 
 FROM node:20-slim
