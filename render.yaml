@@ -45,4 +45,4 @@ services:
 
     envVars:
       - key: BACKEND_URL
-        value: "https://hr-talent-intelligence-backend.onrender.com"
+        value: "https://talentbase-ai-platform.onrender.com"
