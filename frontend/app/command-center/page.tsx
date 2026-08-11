@@ -3,6 +3,23 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api";
+import { Search, Flame, Zap, Clock, Circle, Target, Phone, Mail } from "lucide-react";
+
+function formatElapsed(firstSeenAt: string): string {
+  const diffMs = Date.now() - new Date(firstSeenAt).getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  if (diffMins < 60) {
+    return `${Math.max(0, diffMins)} mins`;
+  }
+  const diffHours = Math.floor(diffMins / 60);
+  const remainingMins = diffMins % 60;
+  if (diffHours < 24) {
+    return `${diffHours}h ${remainingMins}m`;
+  }
+  const diffDays = Math.floor(diffHours / 24);
+  const remainingHours = diffHours % 24;
+  return `${diffDays} day${diffDays !== 1 ? 's' : ''} ${remainingHours}h`;
+}
 
 interface CandidateMatch {
   screening_id: number;
@@ -134,7 +151,11 @@ export default function CommandCenterPage() {
         </div>
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
           <button className="secondary" onClick={handleRecomputeUrgency} disabled={recomputing}>
-            {recomputing ? "Recomputing..." : "⚡ Recompute Urgency"}
+            {recomputing ? "Recomputing..." : (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <Zap className="w-3.5 h-3.5" /> Recompute Urgency
+              </span>
+            )}
           </button>
           <Link href="/companies">
             <button className="primary">+ Add Lead</button>
@@ -163,7 +184,13 @@ export default function CommandCenterPage() {
             onClick={() => setFilterUrgency(tab)}
             style={{ fontSize: 13, padding: "6px 14px" }}
           >
-            {tab === "Action now" ? "🔥 Action now (Sweet Spot)" : tab}
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              {tab === "Action now" && <Zap className="w-3.5 h-3.5" />}
+              {tab === "Warming" && <Flame className="w-3.5 h-3.5" />}
+              {tab === "Follow-up" && <Clock className="w-3.5 h-3.5" />}
+              {tab === "Monitor" && <Circle className="w-3.5 h-3.5" />}
+              {tab === "Action now" ? "Action now (Sweet Spot)" : tab}
+            </span>
           </button>
         ))}
       </div>
@@ -175,7 +202,7 @@ export default function CommandCenterPage() {
       ) : matches.length === 0 ? (
         <div className="card" style={{ textAlign: "center", padding: 40 }}>
           <p style={{ fontSize: 16, color: "#9ca3af" }}>No opportunities found in &quot;{filterUrgency}&quot; urgency band.</p>
-          <p style={{ fontSize: 14, color: "#6b7280" }}>Add target companies and roles in Demand side or click &quot;⚡ Recompute Urgency&quot;.</p>
+          <p style={{ fontSize: 14, color: "#6b7280" }}>Add target companies and roles in Demand side or click &quot;Recompute Urgency&quot;.</p>
         </div>
       ) : (
         /* ─── Split View Layout ────────────────────────────────────────── */
@@ -221,8 +248,14 @@ export default function CommandCenterPage() {
                   </p>
 
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#9ca3af", paddingTop: 8, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-                    <span>⏱️ {item.days_open} days open</span>
-                    <span>🎯 {item.matching_candidates.length} candidates fit</span>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                      <Clock className="w-3.5 h-3.5 text-gray-500" />
+                      {formatElapsed(item.first_seen_at)} open
+                    </span>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                      <Target className="w-3.5 h-3.5 text-gray-500" />
+                      {item.matching_candidates.length} candidates fit
+                    </span>
                   </div>
                 </div>
               );
@@ -250,7 +283,9 @@ export default function CommandCenterPage() {
                     }}
                     style={{ fontSize: 12 }}
                   >
-                    📞 Log Client Outreach
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      <Phone className="w-3.5 h-3.5" /> Log Client Outreach
+                    </span>
                   </button>
                 </div>
 
@@ -328,7 +363,9 @@ export default function CommandCenterPage() {
                             }}
                             style={{ fontSize: 12, padding: "4px 10px" }}
                           >
-                            ✉️ Log Candidate Outreach
+                            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                              <Mail className="w-3.5 h-3.5" /> Log Candidate Outreach
+                            </span>
                           </button>
                         </div>
                       </div>

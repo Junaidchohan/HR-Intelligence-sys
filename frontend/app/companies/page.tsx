@@ -4,6 +4,23 @@ import { useEffect, useMemo, useState } from "react";
 import { api, Company, Opportunity } from "@/lib/api";
 import PrimaryButton from "@/components/PrimaryButton";
 import { PageSkeleton } from "@/components/ui/PageSkeleton";
+import { Search, Flame, Zap, Clock, Circle, Trash2, Target, Building2, Globe } from "lucide-react";
+
+function formatElapsed(firstSeenAt: string): string {
+  const diffMs = Date.now() - new Date(firstSeenAt).getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  if (diffMins < 60) {
+    return `${Math.max(0, diffMins)} mins`;
+  }
+  const diffHours = Math.floor(diffMins / 60);
+  const remainingMins = diffMins % 60;
+  if (diffHours < 24) {
+    return `${diffHours}h ${remainingMins}m`;
+  }
+  const diffDays = Math.floor(diffHours / 24);
+  const remainingHours = diffHours % 24;
+  return `${diffDays} day${diffDays !== 1 ? 's' : ''} ${remainingHours}h`;
+}
 
 // ─── Badges & Helpers ────────────────────────────────────────────────────────
 
@@ -34,13 +51,13 @@ function TierBadge({ tier }: { tier: string | null }) {
   );
 }
 
-function UrgencyBadge({ band, daysOpen }: { band: string | null; daysOpen: number }) {
+function UrgencyBadge({ band, firstSeenAt }: { band: string | null; firstSeenAt: string }) {
   const b = band ?? "Monitor";
-  const styles: Record<string, { bg: string; color: string; border: string; icon: string }> = {
-    Monitor:     { bg: "rgba(59,130,246,0.12)",  color: "#60a5fa", border: "rgba(59,130,246,0.35)",  icon: "🔍" },
-    Warming:     { bg: "rgba(245,158,11,0.12)",  color: "#fbbf24", border: "rgba(245,158,11,0.35)",  icon: "🔥" },
-    "Action now":{ bg: "rgba(16,185,129,0.15)",  color: "#34d399", border: "rgba(16,185,129,0.4)",   icon: "⚡" },
-    "Follow-up": { bg: "rgba(239,68,68,0.15)",   color: "#f87171", border: "rgba(239,68,68,0.4)",    icon: "⏰" },
+  const styles: Record<string, { bg: string; color: string; border: string; icon: React.ReactNode }> = {
+    Monitor:     { bg: "rgba(59,130,246,0.12)",  color: "#60a5fa", border: "rgba(59,130,246,0.35)",  icon: <Circle className="w-3.5 h-3.5" /> },
+    Warming:     { bg: "rgba(245,158,11,0.12)",  color: "#fbbf24", border: "rgba(245,158,11,0.35)",  icon: <Flame className="w-3.5 h-3.5" /> },
+    "Action now":{ bg: "rgba(16,185,129,0.15)",  color: "#34d399", border: "rgba(16,185,129,0.4)",   icon: <Zap className="w-3.5 h-3.5" /> },
+    "Follow-up": { bg: "rgba(239,68,68,0.15)",   color: "#f87171", border: "rgba(239,68,68,0.4)",    icon: <Clock className="w-3.5 h-3.5" /> },
   };
   const s = styles[b] ?? styles.Monitor;
   return (
@@ -58,8 +75,8 @@ function UrgencyBadge({ band, daysOpen }: { band: string | null; daysOpen: numbe
         border: `1px solid ${s.border}`,
       }}
     >
-      <span>{s.icon}</span>
-      <span>{b} ({daysOpen}d)</span>
+      <span style={{ display: "inline-flex" }}>{s.icon}</span>
+      <span>{b} ({formatElapsed(firstSeenAt)})</span>
     </span>
   );
 }
@@ -303,7 +320,9 @@ function OpportunityModal({ companies, selectedCompanyId, onClose, onSaved }: Op
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-          <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>🎯 Add Role Opportunity</h3>
+          <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, display: "flex", alignItems: "center", gap: 6 }}>
+            <Target className="w-5 h-5 text-blue-500" /> Add Role Opportunity
+          </h3>
           <button
             onClick={onClose}
             style={{ background: "transparent", border: "none", color: "var(--muted)", fontSize: 20, cursor: "pointer", boxShadow: "none" }}
@@ -337,17 +356,23 @@ function OpportunityModal({ companies, selectedCompanyId, onClose, onSaved }: Op
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <label style={labelStyle}>Days Open (Hardcoded)</label>
-              <input value="0 days (Just Opened)" disabled style={{ opacity: 0.6, cursor: "not-allowed" }} />
+              <label style={labelStyle}>Opened At</label>
+              <input value={new Date().toLocaleString()} disabled style={{ opacity: 0.6, cursor: "not-allowed" }} />
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <label style={labelStyle}>Initial Urgency Band</label>
-              <select value={urgencyBand} onChange={(e) => setUrgencyBand(e.target.value)}>
-                <option value="Monitor">🔍 Monitor (1-6 days)</option>
-                <option value="Warming">🔥 Warming (7-13 days)</option>
-                <option value="Action now">⚡ Action now (14-18 days)</option>
-                <option value="Follow-up">⏰ Follow-up (20+ days)</option>
-              </select>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                {urgencyBand === "Monitor" && <Circle className="w-4 h-4 text-blue-400" />}
+                {urgencyBand === "Warming" && <Flame className="w-4 h-4 text-yellow-500" />}
+                {urgencyBand === "Action now" && <Zap className="w-4 h-4 text-green-400" />}
+                {urgencyBand === "Follow-up" && <Clock className="w-4 h-4 text-red-400" />}
+                <select value={urgencyBand} onChange={(e) => setUrgencyBand(e.target.value)} style={{ flex: 1 }}>
+                  <option value="Monitor">Monitor (1-6 days)</option>
+                  <option value="Warming">Warming (7-13 days)</option>
+                  <option value="Action now">Action now (14-18 days)</option>
+                  <option value="Follow-up">Follow-up (20+ days)</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -489,7 +514,7 @@ export default function CompaniesPage() {
         <div className="card" style={{ marginBottom: 24, padding: "16px 20px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 280 }}>
-              <span style={{ fontSize: 16, color: "var(--muted)" }}>🔍</span>
+              <Search className="w-5 h-5 text-gray-400" />
               <input
                 placeholder="Search companies by name, domain, or role archetype…"
                 value={searchQuery}
@@ -515,7 +540,7 @@ export default function CompaniesPage() {
         {/* Content Section */}
         {companies.length === 0 ? (
           <div className="card" style={{ textAlign: "center", padding: "64px 24px" }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>🏢</div>
+            <Building2 className="w-12 h-12 text-gray-600 mx-auto mb-4" />
             <h3 style={{ margin: "0 0 8px", fontSize: 18, fontWeight: 700 }}>No Target Companies Yet</h3>
             <p style={{ color: "var(--muted)", fontSize: 14, margin: "0 0 20px", maxWidth: 420, marginLeft: "auto", marginRight: "auto" }}>
               Build out your Demand Side pipeline by registering client companies and their active role opportunities.
@@ -558,7 +583,7 @@ export default function CompaniesPage() {
                         fontSize: 20,
                       }}
                     >
-                      🏢
+                      <Building2 className="w-6 h-6 text-blue-400" />
                     </div>
                     <div>
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -573,16 +598,10 @@ export default function CompaniesPage() {
                             rel="noreferrer"
                             style={{ color: "var(--accent)", textDecoration: "none" }}
                           >
-                            🌐 {comp.domain}
+                            <Globe className="w-3.5 h-3.5 inline-block mr-1" /> {comp.domain}
                           </a>
                         )}
                         <span>Stage: <strong>{comp.funding_stage || "Series A"}</strong></span>
-                        {comp.headcount && <span>Headcount: <strong>{comp.headcount}</strong></span>}
-                        {comp.growth_rate && (
-                          <span style={{ color: "var(--good)" }}>
-                            📈 +{comp.growth_rate}% YoY
-                          </span>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -612,7 +631,7 @@ export default function CompaniesPage() {
                         cursor: "pointer",
                       }}
                     >
-                      🗑
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -625,7 +644,7 @@ export default function CompaniesPage() {
                         <tr>
                           <th>Role Archetype</th>
                           <th>First Seen</th>
-                          <th>Days Open</th>
+                          <th>Duration Open</th>
                           <th>Urgency Band</th>
                           <th style={{ textAlign: "right" }}>Actions</th>
                         </tr>
@@ -633,17 +652,21 @@ export default function CompaniesPage() {
                       <tbody>
                         {comp.opportunities.map((opp) => (
                           <tr key={opp.id}>
-                            <td style={{ fontWeight: 600 }}>🎯 {opp.role_archetype}</td>
+                            <td style={{ fontWeight: 600 }}>
+                              <Target className="w-4 h-4 mr-1.5 inline-block text-blue-500" />
+                              {opp.role_archetype}
+                            </td>
                             <td style={{ color: "var(--muted)", fontSize: 13 }}>
                               {new Date(opp.first_seen_at).toLocaleDateString()}
                             </td>
                             <td>
-                              <span style={{ fontWeight: 700, color: "var(--text)" }}>
-                                {opp.days_open} days
+                              <span style={{ fontWeight: 700, color: "var(--text)", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                                <Clock className="w-3.5 h-3.5 text-gray-400" />
+                                {formatElapsed(opp.first_seen_at)}
                               </span>
                             </td>
                             <td>
-                              <UrgencyBadge band={opp.urgency_band} daysOpen={opp.days_open} />
+                              <UrgencyBadge band={opp.urgency_band} firstSeenAt={opp.first_seen_at} />
                             </td>
                             <td style={{ textAlign: "right" }}>
                               <button
@@ -652,14 +675,11 @@ export default function CompaniesPage() {
                                 style={{
                                   background: "transparent",
                                   border: "none",
-                                  color: "var(--muted)",
-                                  boxShadow: "none",
-                                  fontSize: 14,
                                   padding: "4px 8px",
                                   cursor: "pointer",
                                 }}
                               >
-                                ✕
+                                <Trash2 className="w-4 h-4 text-red-500 hover:text-red-400" />
                               </button>
                             </td>
                           </tr>
