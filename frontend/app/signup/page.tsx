@@ -41,20 +41,20 @@ export default function SignupPage() {
   }
 
   return (
-    <>
+    <div className="w-full min-h-screen bg-transparent text-white font-sans">
       {/* ─── Full-screen Edge-to-Edge Space Background ─── */}
       <div className="fixed inset-0 w-screen h-screen z-0 overflow-hidden pointer-events-none">
         <div
-          className="absolute inset-0 w-full h-full bg-cover bg-center animate-[slowZoom_30s_ease-in-out_infinite]"
+          className="absolute inset-0 w-full h-full bg-cover bg-center animate-[slowZoom_30s_ease-in-out_infinite] object-cover"
           style={{
             backgroundImage: `url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')`,
           }}
         />
-        <div className="absolute inset-0 bg-slate-900/30" />
+        <div className="absolute inset-0 bg-slate-900/10" />
       </div>
 
       {/* ─── Form Container (Transparent Outer Wrapper) ─── */}
-      <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-220px)] py-8 px-4 bg-transparent">
+      <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-140px)] py-12 px-4 bg-transparent">
         <div className="card fade-in relative z-10 w-full" style={{ maxWidth: 420, padding: "40px", backdropFilter: "blur(16px)" }}>
           <h2 style={{ textAlign: "center", marginBottom: 6, fontWeight: 800, fontSize: 28, letterSpacing: "-0.03em" }}>
             Create Account
@@ -121,6 +121,6 @@ export default function SignupPage() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
