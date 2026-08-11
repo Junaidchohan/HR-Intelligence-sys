@@ -46,7 +46,7 @@ export default function SignupPage() {
         Create Account
       </h2>
       <p className="muted" style={{ textAlign: "center", marginBottom: 32, fontSize: 13 }}>
-        Sign up for the AI Talent Command Console
+        Sign up for Talentbase AI
       </p>
 
       <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>

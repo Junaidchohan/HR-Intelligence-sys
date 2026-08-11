@@ -32,7 +32,7 @@ export default function LoginPage() {
     <div className="card fade-in" style={{ maxWidth: 420, margin: "80px auto", padding: "40px" }}>
       <h2 style={{ textAlign: "center", marginBottom: 6, fontWeight: 800, fontSize: 28, letterSpacing: "-0.03em" }}>Sign in</h2>
       <p className="muted" style={{ textAlign: "center", marginBottom: 32, fontSize: 13 }}>
-        Access the AI Talent Command Console
+        Access the Talentbase AI Command Console
       </p>
 
       <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>

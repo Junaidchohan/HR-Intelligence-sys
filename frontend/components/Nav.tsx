@@ -52,8 +52,13 @@ export default function Nav() {
   return (
     <nav className="nav" ref={menuRef}>
       {/* ─── Brand ─────────────────────────────────────────────── */}
-      <Link href="/candidates" className="brand" style={{ textDecoration: "none" }}>
-        Talent Intelligence
+      <Link href="/candidates" className="brand" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "8px" }}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent, #6366f1)", flexShrink: 0 }} aria-hidden="true">
+          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+          <path d="M12 6l-4 8h8z" />
+          <path d="M8 14h8" />
+        </svg>
+        <span>Talentbase AI</span>
       </Link>
 
       {/* ─── Desktop links (hidden on mobile) ──────────────────── */}

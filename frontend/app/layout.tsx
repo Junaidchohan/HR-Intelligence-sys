@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import AuthGuard from "@/components/AuthGuard";
 
 export const metadata: Metadata = {
-  title: "AI Talent Intelligence Platform",
+  title: "Talentbase AI | Unified Lead Command",
   description: "Recruiter console for candidate sourcing, screening, and evidence review",
 };
 

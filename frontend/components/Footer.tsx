@@ -8,7 +8,7 @@ export default function Footer() {
           {/* Column 1: Brand */}
           <div className="flex flex-col items-center justify-start">
             <h3 className="font-bold text-white text-base tracking-wide mb-1">
-              Talent Intelligence
+              Talentbase AI
             </h3>
             <p className="text-xs text-gray-400">
               Secure AI-powered talent graph for enterprise search
@@ -72,6 +72,13 @@ export default function Footer() {
               </li>
             </ul>
           </div>
+        </div>
+        
+        {/* Bottom Bar */}
+        <div className="border-t border-white/5 mt-8 pt-6 text-center">
+          <p className="text-xs text-gray-500">
+            &copy; 2026 Talentbase AI. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
