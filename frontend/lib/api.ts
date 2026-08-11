@@ -30,23 +30,29 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   try {
     const res = await fetch(fullUrl, { ...options, headers });
+
+    // Read the body exactly ONCE as text — a Response body stream can only
+    // be consumed once, so we must not call res.json() AND res.text().
+    const text = await res.text();
+
     if (!res.ok) {
       let errorMessage = `API ${res.status}`;
       try {
-        const errorData = await res.json();
+        const errorData = JSON.parse(text);
         if (errorData && errorData.detail) {
-          errorMessage = typeof errorData.detail === "string" 
-            ? errorData.detail 
-            : JSON.stringify(errorData.detail);
+          errorMessage =
+            typeof errorData.detail === "string"
+              ? errorData.detail
+              : JSON.stringify(errorData.detail);
         }
       } catch {
-        const text = await res.text();
         if (text) errorMessage = text;
       }
       throw new Error(errorMessage);
     }
-    if (res.status === 204) return undefined as unknown as T;
-    return res.json() as Promise<T>;
+
+    if (res.status === 204 || text === "") return undefined as unknown as T;
+    return JSON.parse(text) as T;
   } catch (error) {
     console.error("Full Error Object:", error);
     throw error;
