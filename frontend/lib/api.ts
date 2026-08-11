@@ -1,7 +1,6 @@
-// All API calls go to /api/* on the same domain.
-// Next.js (next.config.js rewrites) proxies them server-side to the real backend.
-// This means: no CORS issues, no build-time env var needed.
-const API_BASE = "/api";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://talentbase-ai-platform.onrender.com";
 
 
 export function getToken(): string | null {
