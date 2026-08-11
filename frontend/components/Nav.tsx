@@ -13,7 +13,6 @@ const NAV_LINKS = [
   { href: "/rubrics",        label: "Rubrics"        },
   { href: "/jobs",           label: "Jobs"           },
   { href: "/batch",          label: "Batch"          },
-  { href: "/settings",       label: "Settings"       },
 ];
 
 export default function Nav() {

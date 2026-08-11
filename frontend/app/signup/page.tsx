@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { api, setToken } from "@/lib/api";
 import PrimaryButton from "@/components/PrimaryButton";
+import Footer from "@/components/Footer";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -41,7 +42,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-transparent text-white font-sans">
+    <div className="w-full min-h-screen bg-transparent text-white font-sans flex flex-col justify-between">
       {/* ─── Full-screen Edge-to-Edge Space Background ─── */}
       <div className="fixed inset-0 w-screen h-screen z-0 overflow-hidden pointer-events-none">
         <div
@@ -54,7 +55,7 @@ export default function SignupPage() {
       </div>
 
       {/* ─── Form Container (Dead Center Locked - 95% Transparent) ─── */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center p-4 bg-transparent">
+      <div className="relative z-10 flex flex-1 min-h-[calc(100vh-140px)] items-center justify-center p-4 bg-transparent">
         <div
           className="m-auto relative z-10 w-full max-w-[420px] p-10 rounded-2xl bg-slate-900/5 border border-white/10 shadow-2xl backdrop-blur-xl"
         >
@@ -122,6 +123,11 @@ export default function SignupPage() {
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* Footer rendered directly at the bottom */}
+      <div className="relative z-10">
+        <Footer />
       </div>
     </div>
   );

@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { Network, CheckCircle2, Layers, ArrowRight } from "lucide-react";
+import Footer from "@/components/Footer";
 
 export default function LandingPage() {
   return (
-    <div className="w-full min-h-screen bg-transparent text-white font-sans">
+    <div className="w-full min-h-screen bg-transparent text-white font-sans flex flex-col justify-between">
       {/* ─── Background Image with Ultra-Slow Cinematic Zoom ─── */}
       <div className="fixed inset-0 w-screen h-screen z-0 overflow-hidden pointer-events-none">
         <div
@@ -19,7 +20,7 @@ export default function LandingPage() {
       </div>
 
       {/* ─── Content Wrapper ──────────────────────────────────────────────── */}
-      <div className="relative z-10 flex flex-col min-h-screen">
+      <div className="relative z-10 flex flex-col min-h-screen justify-between">
         {/* ─── Main Hero & Features Container ──────────────────────────────── */}
         <main className="flex-1 w-full px-6 pt-20 pb-24 flex flex-col justify-center">
           {/* Hero Section (95% Transparent Card) */}
@@ -82,6 +83,9 @@ export default function LandingPage() {
             </div>
           </div>
         </main>
+
+        {/* Footer rendered directly at the bottom */}
+        <Footer />
       </div>
     </div>
   );

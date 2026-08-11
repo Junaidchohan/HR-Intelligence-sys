@@ -1,7 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
 import AuthGuard from "@/components/AuthGuard";
 
 export const metadata: Metadata = {
@@ -17,7 +16,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthGuard>
           {children}
         </AuthGuard>
-        <Footer />
       </body>
     </html>
   );
