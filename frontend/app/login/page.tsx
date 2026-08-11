@@ -38,7 +38,7 @@ export default function LoginPage() {
             backgroundImage: `url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')`,
           }}
         />
-        <div className="absolute inset-0 bg-slate-900/10" />
+        <div className="absolute inset-0 bg-black/10" />
       </div>
 
       {/* ─── Form Container (Transparent Outer Wrapper) ─── */}
