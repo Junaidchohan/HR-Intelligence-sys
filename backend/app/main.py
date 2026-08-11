@@ -39,6 +39,7 @@ app.add_middleware(
         "http://127.0.0.1:8000",
         "https://hr-intelligence-sys-one.vercel.app",        # Vercel production
         "https://hr-intelligence-sys-frontend.onrender.com", # Render frontend
+        "https://talentbase-ai-platform.onrender.com",
         *_EXTRA_ORIGINS,  # Any extra domains via env (e.g. custom domain)
     ],
     allow_credentials=True,
