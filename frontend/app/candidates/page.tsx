@@ -480,15 +480,15 @@ export default function CandidatesDirectoryPage() {
               return (
                 <div
                   key={c.id}
-                  className="grid grid-cols-12 gap-4 items-center px-6 py-4 transition-all duration-300 hover:bg-white/[0.03] hover:-translate-y-0.5 group"
+                  className="flex flex-col sm:grid sm:grid-cols-12 gap-4 items-start sm:items-center px-4 sm:px-6 py-4 transition-all duration-300 hover:bg-white/[0.03] group relative"
                 >
                   {/* Candidate Avatar & Name */}
-                  <div className="col-span-4 md:col-span-3 flex items-center gap-3.5">
+                  <div className="sm:col-span-4 md:col-span-3 flex items-center gap-3.5 w-full sm:w-auto">
                     <CandidateAvatar candidate={c} />
-                    <div className="flex flex-col min-w-0">
+                    <div className="flex flex-col min-w-0 flex-1">
                       <Link
                         href={`/candidates/${c.id}`}
-                        className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors truncate"
+                        className="text-lg sm:text-xl font-bold text-white group-hover:text-blue-400 transition-colors truncate"
                       >
                         {c.full_name || "Unknown Candidate"}
                       </Link>
@@ -499,16 +499,16 @@ export default function CandidatesDirectoryPage() {
                   </div>
 
                   {/* Quick AI Score Column */}
-                  <div className="col-span-3 md:col-span-2">
+                  <div className="sm:col-span-3 md:col-span-2">
                     <MiniScoreRing score={candidateScore} />
                   </div>
 
                   {/* Skills Column */}
-                  <div className="col-span-3 md:col-span-4 flex flex-wrap gap-1.5 items-center">
+                  <div className="sm:col-span-3 md:col-span-4 flex flex-wrap gap-1.5 items-center w-full">
                     {(c.skills || []).slice(0, 4).map((s) => (
                       <span
                         key={s}
-                        className="text-sm bg-white/10 text-zinc-200 px-3 py-1 rounded-full lowercase"
+                        className="text-xs sm:text-sm bg-white/10 text-zinc-200 px-3 py-1 rounded-full lowercase truncate max-w-[140px]"
                       >
                         {s}
                       </span>
@@ -527,7 +527,7 @@ export default function CandidatesDirectoryPage() {
                   </div>
 
                   {/* Actions Column: View Profile Eye Icon + Trash2 */}
-                  <div className="col-span-2 md:col-span-1 flex items-center justify-end gap-1.5">
+                  <div className="absolute top-4 right-4 sm:static sm:col-span-2 md:col-span-1 flex items-center justify-end gap-1.5">
                     <Link
                       href={`/candidates/${c.id}`}
                       aria-label="View Profile"

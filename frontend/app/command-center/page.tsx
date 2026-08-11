@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { Search, Flame, Zap, Clock, Circle, Target, Phone, Mail } from "lucide-react";
+import { PageSkeleton } from "@/components/ui/PageSkeleton";
 
 function formatElapsed(firstSeenAt: string): string {
   const diffMs = Date.now() - new Date(firstSeenAt).getTime();
@@ -226,17 +227,15 @@ export default function CommandCenterPage() {
       </div>
 
       {loading ? (
-        <div className="card" style={{ textAlign: "center", padding: 40, color: "#9ca3af" }}>
-          Loading Join Layer matches...
-        </div>
+        <PageSkeleton type="details" className="max-w-7xl mx-auto px-2 py-4" />
       ) : matches.length === 0 ? (
         <div className="card" style={{ textAlign: "center", padding: 40 }}>
           <p style={{ fontSize: 16, color: "#9ca3af" }}>No opportunities found in &quot;{filterUrgency}&quot; urgency band.</p>
           <p style={{ fontSize: 14, color: "#6b7280" }}>Add target companies and roles in Demand side or click &quot;Recompute Urgency&quot;.</p>
         </div>
       ) : (
-        /* ─── Split View Layout ────────────────────────────────────────── */
-        <div style={{ display: "grid", gridTemplateColumns: "380px 1fr", gap: 24, alignItems: "start" }}>
+        /* ─── Split View Layout (Mobile Stack, Desktop 2-Col Grid) ─────── */
+        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
           
           {/* ─── Left Pane: Demand-side Action Queue ────────────────── */}
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

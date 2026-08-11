@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { api, Rubric } from "@/lib/api";
 import PrimaryButton from "@/components/PrimaryButton";
+import { PageSkeleton } from "@/components/ui/PageSkeleton";
 
 interface CriterionForm {
   name: string;
@@ -16,13 +17,19 @@ const emptyCriterion = (): CriterionForm => ({ name: "", weight: "", required_sk
 
 export default function RubricsPage() {
   const [rubrics, setRubrics] = useState<Rubric[]>([]);
+  const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [criteria, setCriteria] = useState<CriterionForm[]>([emptyCriterion()]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function load() {
-    setRubrics(await api.listRubrics());
+    setLoading(true);
+    try {
+      setRubrics(await api.listRubrics());
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -133,6 +140,8 @@ export default function RubricsPage() {
   }
 
   const weightSum = criteria.reduce((acc, c) => acc + (parseFloat(c.weight) || 0), 0);
+
+  if (loading) return <PageSkeleton type="grid" className="max-w-7xl mx-auto px-2 py-4" />;
 
   return (
     <div className="fade-in">

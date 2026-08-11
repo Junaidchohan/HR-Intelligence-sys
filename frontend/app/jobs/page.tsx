@@ -561,9 +561,9 @@ export default function JobsPage() {
 
       <div className="fade-in">
         {/* Page header */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28 }}>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-7">
           <div>
-            <h1 style={{ margin: 0 }}>Job Requisitions</h1>
+            <h1 className="text-3xl font-extrabold tracking-tight text-white m-0">Job Requisitions</h1>
             <p style={{ margin: "6px 0 0", color: "var(--muted)", fontSize: 14 }}>
               Manage your open roles and screen candidates against rubrics.
             </p>

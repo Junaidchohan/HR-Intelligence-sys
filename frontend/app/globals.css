@@ -594,7 +594,16 @@ h1 {
   animation-delay: 200ms;
 }
 
-.delay-300 {
-  animation-delay: 300ms;
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+}
