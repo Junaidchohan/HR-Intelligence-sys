@@ -17,9 +17,9 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Redirect bare "/" to the app shell; AuthGuard will decide /login vs /candidates.
+  // Allow public access to root "/" landing page
   if (pathname === "/") {
-    return NextResponse.redirect(new URL("/candidates", request.url));
+    return NextResponse.next();
   }
 
   return NextResponse.next();

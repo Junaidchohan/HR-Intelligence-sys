@@ -25,6 +25,11 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
+    if (pathname === "/") {
+      setChecking(false);
+      return;
+    }
+
     const token = getToken();
     const isPublic = PUBLIC_PATHS.includes(pathname);
 
