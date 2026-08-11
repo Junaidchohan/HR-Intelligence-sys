@@ -35,7 +35,7 @@ function MiniScoreRing({ score }: { score: number | null }) {
         <div className="w-16 h-16 rounded-full bg-zinc-900/80 border border-zinc-800 flex items-center justify-center flex-shrink-0">
           <span className="text-sm font-semibold text-zinc-500">—</span>
         </div>
-        <span className="text-sm font-medium text-zinc-400">Pending</span>
+        <span className="text-sm font-medium text-zinc-400">Not Matched</span>
       </div>
     );
   }
@@ -295,7 +295,7 @@ export default function CandidatesDirectoryPage() {
         <div className="flex flex-col md:flex-row items-center gap-3 w-full">
           {/* Left Label */}
           <div className="flex items-center gap-2 px-3 text-xs font-bold uppercase tracking-widest text-zinc-400 whitespace-nowrap">
-            <span>🔍</span>
+            <Search className="w-5 h-5 text-gray-400" />
             <span>Search & Ingest</span>
           </div>
 
@@ -540,7 +540,7 @@ export default function CandidatesDirectoryPage() {
                       onClick={() => handleDelete(c.id, c.full_name)}
                       aria-label="Remove Candidate"
                       title="Remove Candidate"
-                      className="bg-transparent text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-full p-2.5 transition-all duration-200 cursor-pointer"
+                      className="bg-transparent text-red-500 hover:text-red-400 hover:bg-red-500/10 rounded-full p-2.5 transition-all duration-200 cursor-pointer"
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>
