@@ -87,11 +87,18 @@ body {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 24px;
+  padding: 28px 32px;
+  margin-bottom: 28px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 20px 16px;
+    margin-bottom: 20px;
+  }
 }
 
 .card:hover {

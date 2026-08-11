@@ -28,5 +28,15 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-  return <main className="w-full min-h-screen bg-transparent">{children}</main>;
+  const isPublicPage = PUBLIC_PATHS.includes(pathname);
+
+  if (isPublicPage) {
+    return <main className="w-full min-h-screen bg-transparent">{children}</main>;
+  }
+
+  return (
+    <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen bg-transparent fade-in">
+      {children}
+    </main>
+  );
 }
