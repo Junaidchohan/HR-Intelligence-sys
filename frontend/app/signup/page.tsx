@@ -32,7 +32,7 @@ export default function SignupPage() {
     try {
       const res = await api.register(email, password);
       setToken(res.access_token);
-      router.push("/candidates");
+      router.push("/");
     } catch (err: any) {
       setError(err.message || "Signup failed");
     } finally {
@@ -53,9 +53,12 @@ export default function SignupPage() {
         <div className="absolute inset-0 bg-black/10" />
       </div>
 
-      {/* ─── Form Container (Transparent Outer Wrapper) ─── */}
-      <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-140px)] py-12 px-4 bg-transparent">
-        <div className="card fade-in relative z-10 w-full" style={{ maxWidth: 420, padding: "40px", backdropFilter: "blur(16px)" }}>
+      {/* ─── Form Container (Dead Center Locked in Place) ─── */}
+      <div className="relative z-10 flex items-center justify-center min-h-screen p-4 bg-transparent">
+        <div
+          className="relative z-10 w-full max-w-[420px] p-10 rounded-2xl bg-transparent border border-white/10 shadow-xl backdrop-blur-xl"
+          style={{ backgroundColor: "transparent" }}
+        >
           <h2 style={{ textAlign: "center", marginBottom: 6, fontWeight: 800, fontSize: 28, letterSpacing: "-0.03em" }}>
             Create Account
           </h2>
