@@ -35,7 +35,13 @@ class GitHubConnector(SourceConnector):
         self.token = token
         self.db = db
         self.user_id = user_id
-        env_offline = os.environ.get("GITHUB_OFFLINE_FIXTURES", "").lower() in {"1", "true", "yes"}
+        env_offline_str = os.environ.get("GITHUB_OFFLINE_FIXTURES", "").lower()
+        if env_offline_str in {"1", "true", "yes"}:
+            env_offline = True
+        elif env_offline_str in {"0", "false", "no"}:
+            env_offline = False
+        else:
+            env_offline = not bool(self.get_token())
         self.offline = offline if offline is not None else env_offline
         self.timeout = timeout
 
