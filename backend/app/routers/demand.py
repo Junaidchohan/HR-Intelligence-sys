@@ -102,6 +102,8 @@ def create_opportunity(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
+    import datetime
+
     company = db.get(Company, payload.company_id)
     if not company:
         raise HTTPException(status_code=404, detail="Company not found")
@@ -109,14 +111,31 @@ def create_opportunity(
     if not payload.role_archetype.strip():
         raise HTTPException(status_code=400, detail="Role archetype is required")
 
-    days_open = 0  # Hardcoded on creation per spec
-    urgency = compute_urgency_band(days_open)
+    now_utc = datetime.datetime.utcnow()
+    band = payload.urgency_band or "Monitor"
+
+    if band == "Monitor":
+        first_seen = now_utc - datetime.timedelta(days=1)
+        days_open = 1
+    elif band == "Warming":
+        first_seen = now_utc - datetime.timedelta(days=7)
+        days_open = 7
+    elif band == "Action now":
+        first_seen = now_utc - datetime.timedelta(days=14)
+        days_open = 14
+    elif band == "Follow-up":
+        first_seen = now_utc - datetime.timedelta(days=20)
+        days_open = 20
+    else:
+        first_seen = now_utc
+        days_open = 0
 
     opp = Opportunity(
         company_id=payload.company_id,
         role_archetype=payload.role_archetype.strip(),
+        first_seen_at=first_seen,
         days_open=days_open,
-        urgency_band=payload.urgency_band or urgency,
+        urgency_band=band,
     )
     db.add(opp)
     db.commit()

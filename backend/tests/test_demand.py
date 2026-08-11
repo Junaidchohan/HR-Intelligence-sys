@@ -82,8 +82,8 @@ def test_create_opportunity_hardcodes_days_open(demand_auth_headers):
     opp = o_res.json()
     assert opp["company_id"] == company_id
     assert opp["role_archetype"] == "Agentic Engineer"
-    assert opp["days_open"] == 0  # Hardcoded 0 on creation per spec
-    assert opp["urgency_band"] == "Monitor"  # 0 days open -> Monitor
+    assert opp["days_open"] == 1  # 1 day open based on selected Monitor band
+    assert opp["urgency_band"] == "Monitor"
 
     # Get company and verify nested opportunity
     c_get = client.get(f"/companies/{company_id}", headers=demand_auth_headers)
