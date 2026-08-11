@@ -36,13 +36,24 @@ services:
       - key: FRONTEND_URL
         value: "https://hr-intelligence-sys-frontend.onrender.com"
 
-  # ─── Frontend (Next.js via Docker) ─────────────────────────────────────────
+  # ─── Frontend (Next.js — native Node.js, no Docker) ────────────────────────
   - type: web
     name: hr-intelligence-sys-frontend
-    runtime: docker
-    dockerContext: ./frontend
-    dockerfilePath: ./frontend/Dockerfile
+    runtime: node
+    rootDir: frontend
+
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
 
     envVars:
+      - key: NODE_VERSION
+        value: "20"
+
+      # Baked in at build time — Next.js NEXT_PUBLIC_ vars must be set during
+      # `next build` to be available in the browser bundle.
+      - key: NEXT_PUBLIC_API_BASE_URL
+        value: "https://talentbase-ai-platform.onrender.com"
+
+      # Also available at runtime for next.config.js rewrites (redundant but safe)
       - key: BACKEND_URL
         value: "https://talentbase-ai-platform.onrender.com"
