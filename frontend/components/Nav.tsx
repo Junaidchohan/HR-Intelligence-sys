@@ -52,12 +52,17 @@ export default function Nav() {
 
   return (
     <nav className="nav h-20 px-8" ref={menuRef} style={{ minHeight: "80px" }}>
-      {/* ─── Brand ─────────────────────────────────────────────── */}
+      {/* ─── Premium Logo Replacement ───────────────────────────── */}
       <Link href={loggedIn ? "/candidates" : "/"} className="brand text-2xl font-bold" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "10px", fontSize: "1.5rem" }}>
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent, #6366f1)", flexShrink: 0 }} aria-hidden="true">
-          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
-          <path d="M12 6l-4 8h8z" />
-          <path d="M8 14h8" />
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="mr-2">
+          <rect x="2" y="2" width="28" height="28" rx="6" stroke="url(#logoGradient)" strokeWidth="2" className="drop-shadow-[0_0_15px_rgba(124,58,237,0.5)]"/>
+          <defs>
+            <linearGradient id="logoGradient" x1="0" y1="0" x2="32" y2="32">
+              <stop offset="0%" stopColor="#a855f7"/>
+              <stop offset="100%" stopColor="#6366f1"/>
+            </linearGradient>
+          </defs>
+          <path d="M10 16L14 20L22 12" stroke="url(#logoGradient)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         <span>Talentbase AI</span>
       </Link>
