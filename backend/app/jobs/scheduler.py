@@ -3,8 +3,8 @@ from __future__ import annotations
 import datetime
 from typing import Optional
 
-from apscheduler.schedulers.background import BackgroundScheduler
-from sqlalchemy.orm import Session
+from apscheduler.schedulers.background import BackgroundScheduler  # type: ignore
+from sqlalchemy.orm import Session  # type: ignore
 
 from app.db import SessionLocal
 from app.models import Opportunity

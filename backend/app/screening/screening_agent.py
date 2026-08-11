@@ -56,7 +56,7 @@ def _llm_summary(candidate: Candidate, job: JobRequisition | None, score: float,
     if not settings.screening_use_llm_summary or not settings.anthropic_api_key:
         return None
     try:
-        import anthropic
+        import anthropic  # type: ignore
 
         client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
         job_title = job.title if job else "Custom Rubric"

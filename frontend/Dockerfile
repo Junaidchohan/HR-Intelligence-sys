@@ -7,7 +7,7 @@ ARG NEXT_PUBLIC_API_BASE_URL=https://talentbase-ai-platform.onrender.com
 ENV BACKEND_URL=$BACKEND_URL
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 
-COPY package.json ./
+COPY frontend/package.json ./
 RUN npm install
 COPY . .
 RUN npm run build

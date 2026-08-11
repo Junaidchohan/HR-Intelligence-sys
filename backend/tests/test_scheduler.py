@@ -6,6 +6,7 @@ import os
 os.environ["GITHUB_OFFLINE_FIXTURES"] = "true"
 os.environ["DATABASE_URL"] = "sqlite:///./test_talent.db"
 
+# pyrefly: ignore [missing-import]
 import pytest
 from app.db import Base, SessionLocal, engine
 from app.jobs.scheduler import recompute_urgency_job
