@@ -19,7 +19,7 @@ services:
         generateValue: true
 
       - key: GITHUB_OFFLINE_FIXTURES
-        value: "false"
+        value: "true"
 
       - key: GITHUB_TOKEN
         sync: false
