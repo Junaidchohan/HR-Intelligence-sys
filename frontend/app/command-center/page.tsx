@@ -21,6 +21,36 @@ function formatElapsed(firstSeenAt: string): string {
   return `${diffDays} day${diffDays !== 1 ? 's' : ''} ${remainingHours}h`;
 }
 
+function LiveDuration({ firstSeenAt }: { firstSeenAt: string }) {
+  const [elapsed, setElapsed] = useState("");
+
+  useEffect(() => {
+    function update() {
+      const diffMs = Date.now() - new Date(firstSeenAt).getTime();
+      const diffMins = Math.floor(diffMs / 60000);
+      if (diffMins < 60) {
+        setElapsed(`${Math.max(0, diffMins)} mins`);
+        return;
+      }
+      const diffHours = Math.floor(diffMins / 60);
+      const remainingMins = diffMins % 60;
+      if (diffHours < 24) {
+        setElapsed(`${diffHours}h ${remainingMins}m`);
+        return;
+      }
+      const diffDays = Math.floor(diffHours / 24);
+      const remainingHours = diffHours % 24;
+      setElapsed(`${diffDays} day${diffDays === 1 ? '' : 's'} ${remainingHours}h`);
+    }
+
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, [firstSeenAt]);
+
+  return <span>{elapsed}</span>;
+}
+
 interface CandidateMatch {
   screening_id: number;
   candidate_id: number;
@@ -250,7 +280,7 @@ export default function CommandCenterPage() {
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#9ca3af", paddingTop: 8, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                       <Clock className="w-3.5 h-3.5 text-gray-500" />
-                      {formatElapsed(item.first_seen_at)} open
+                      <LiveDuration firstSeenAt={item.first_seen_at} /> open
                     </span>
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                       <Target className="w-3.5 h-3.5 text-gray-500" />

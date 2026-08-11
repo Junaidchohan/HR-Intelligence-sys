@@ -22,6 +22,36 @@ function formatElapsed(firstSeenAt: string): string {
   return `${diffDays} day${diffDays !== 1 ? 's' : ''} ${remainingHours}h`;
 }
 
+function LiveDuration({ firstSeenAt }: { firstSeenAt: string }) {
+  const [elapsed, setElapsed] = useState("");
+
+  useEffect(() => {
+    function update() {
+      const diffMs = Date.now() - new Date(firstSeenAt).getTime();
+      const diffMins = Math.floor(diffMs / 60000);
+      if (diffMins < 60) {
+        setElapsed(`${Math.max(0, diffMins)} mins`);
+        return;
+      }
+      const diffHours = Math.floor(diffMins / 60);
+      const remainingMins = diffMins % 60;
+      if (diffHours < 24) {
+        setElapsed(`${diffHours}h ${remainingMins}m`);
+        return;
+      }
+      const diffDays = Math.floor(diffHours / 24);
+      const remainingHours = diffHours % 24;
+      setElapsed(`${diffDays} day${diffDays === 1 ? '' : 's'} ${remainingHours}h`);
+    }
+
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, [firstSeenAt]);
+
+  return <span>{elapsed}</span>;
+}
+
 // ─── Badges & Helpers ────────────────────────────────────────────────────────
 
 function TierBadge({ tier }: { tier: string | null }) {
@@ -76,7 +106,7 @@ function UrgencyBadge({ band, firstSeenAt }: { band: string | null; firstSeenAt:
       }}
     >
       <span style={{ display: "inline-flex" }}>{s.icon}</span>
-      <span>{b} ({formatElapsed(firstSeenAt)})</span>
+      <span>{b} (<LiveDuration firstSeenAt={firstSeenAt} />)</span>
     </span>
   );
 }
