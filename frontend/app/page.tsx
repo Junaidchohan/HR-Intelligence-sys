@@ -5,67 +5,25 @@ import { Network, CheckCircle2, Layers, ArrowRight } from "lucide-react";
 
 export default function LandingPage() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white font-sans">
-      {/* ─── 1. Background Image with Ultra-Slow Cinematic Zoom (No Blur, Sharp City Lights) ─── */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+    <div className="w-full min-h-screen bg-transparent text-white font-sans">
+      {/* ─── Background Image with Ultra-Slow Cinematic Zoom ─── */}
+      <div className="fixed inset-0 w-screen h-screen z-0 overflow-hidden pointer-events-none">
         <div
-          className="absolute inset-0 bg-cover bg-center animate-[slowZoom_30s_ease-in-out_infinite]"
+          className="absolute inset-0 w-full h-full bg-cover bg-center animate-[slowZoom_30s_ease-in-out_infinite] object-cover"
           style={{
             backgroundImage: `url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')`,
           }}
         />
-        {/* ─── 2. Lighter Dark Overlay (bg-slate-900/30, no backdrop-blur on background) ─── */}
-        <div className="absolute inset-0 bg-slate-900/30" />
+        {/* Soft Lighter Overlay bg-black/10 for maximum Earth clarity */}
+        <div className="absolute inset-0 bg-black/10" />
       </div>
 
       {/* ─── Content Wrapper ──────────────────────────────────────────────── */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* ─── 3. Navbar ──────────────────────────────────────────────────── */}
-        <header className="sticky top-0 z-50 backdrop-blur-md bg-white/5 border-b border-white/10 px-6 py-4 transition-all">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-white no-underline">
-              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-purple-400"
-                aria-hidden="true"
-              >
-                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
-                <path d="M12 6l-4 8h8z" />
-                <path d="M8 14h8" />
-              </svg>
-              <span>Talentbase AI</span>
-            </Link>
-
-            {/* Auth Buttons */}
-            <div className="flex items-center gap-4">
-              <Link
-                href="/login"
-                className="text-sm font-medium text-gray-300 hover:text-white px-4 py-2 rounded-lg transition-colors"
-              >
-                Log In
-              </Link>
-              <Link
-                href="/signup"
-                className="text-sm font-bold text-white bg-white/10 hover:bg-white/20 border border-white/15 px-4 py-2 rounded-xl backdrop-blur-sm transition-all shadow-md"
-              >
-                Sign Up
-              </Link>
-            </div>
-          </div>
-        </header>
-
         {/* ─── Main Hero & Features Container ──────────────────────────────── */}
-        <main className="flex-1 max-w-7xl mx-auto px-6 pt-20 pb-24 flex flex-col justify-center">
-          {/* ─── 4. Hero Section with Soft Backdrop Blur Container for Text Crispness ─── */}
-          <div className="text-center max-w-4xl mx-auto space-y-6 p-8 rounded-3xl bg-slate-900/20 backdrop-blur-sm border border-white/5">
+        <main className="flex-1 w-full px-6 pt-20 pb-24 flex flex-col justify-center">
+          {/* Hero Section */}
+          <div className="text-center max-w-4xl mx-auto space-y-6 p-8 rounded-3xl bg-slate-900/25 backdrop-blur-sm border border-white/5">
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white leading-tight animate-[fadeInUp_0.8s_ease-out]">
               Unified Lead Command & <br />
               <span className="bg-gradient-to-r from-purple-400 via-indigo-300 to-blue-400 bg-clip-text text-transparent">
@@ -78,7 +36,6 @@ export default function LandingPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-[fadeInUp_0.8s_ease-out] delay-200">
-              {/* Premium Glow & Breathing Scale Button */}
               <Link
                 href="/signup"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-base px-8 py-4 rounded-xl shadow-lg shadow-purple-500/25 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(124,58,237,0.5)]"
@@ -95,8 +52,8 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* ─── 5. Features Section (3 Pillars) ─────────────────────────────── */}
-          <div id="features" className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24">
+          {/* Features Section (3 Pillars) */}
+          <div id="features" className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24 max-w-6xl mx-auto w-full">
             {/* Pillar 1 */}
             <div className="bg-slate-900/40 backdrop-blur-sm border border-white/10 p-8 rounded-2xl hover:border-purple-500/40 transition-all duration-300 animate-[fadeInUp_0.8s_ease-out] delay-100 shadow-xl group">
               <Network className="w-8 h-8 text-purple-400 mb-4 group-hover:scale-110 transition-transform" />

@@ -2,22 +2,22 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0b0f19] border-t border-white/5 pt-10 pb-6 mt-24">
+    <footer className="bg-[#0b0f19] border-t border-white/5 py-12 mt-24">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           {/* Column 1: Brand */}
           <div className="flex flex-col items-center justify-start">
-            <h3 className="font-bold text-white text-base tracking-wide mb-1">
+            <h3 className="text-sm font-bold uppercase text-white tracking-wider mb-2">
               Talentbase AI
             </h3>
-            <p className="text-xs text-gray-400">
+            <p className="text-sm text-gray-400">
               Secure AI-powered talent graph for enterprise search
             </p>
           </div>
 
           {/* Column 2: Support & Legal */}
           <div className="flex flex-col items-center justify-start">
-            <h3 className="uppercase text-xs font-bold text-white tracking-wider mb-3">
+            <h3 className="text-sm font-bold uppercase text-white tracking-wider mb-3">
               Support &amp; Legal
             </h3>
             <ul className="space-y-2">
@@ -46,7 +46,7 @@ export default function Footer() {
 
           {/* Column 3: Social/Team */}
           <div className="flex flex-col items-center justify-start">
-            <h3 className="uppercase text-xs font-bold text-white tracking-wider mb-3">
+            <h3 className="text-sm font-bold uppercase text-white tracking-wider mb-3">
               Connect
             </h3>
             <ul className="space-y-2">
@@ -75,8 +75,8 @@ export default function Footer() {
         </div>
         
         {/* Bottom Bar */}
-        <div className="border-t border-white/5 mt-8 pt-6 text-center">
-          <p className="text-xs text-gray-500">
+        <div className="border-t border-white/5 mt-10 pt-6 text-center">
+          <p className="text-sm text-gray-500">
             &copy; 2026 Talentbase AI. All rights reserved.
           </p>
         </div>

@@ -47,5 +47,11 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     return null;
   }
 
-  return <>{children}</>;
+  const isPublicPage = ["/", "/login", "/signup"].includes(pathname);
+
+  if (isPublicPage) {
+    return <main className="w-full min-h-screen bg-transparent">{children}</main>;
+  }
+
+  return <main className="container fade-in">{children}</main>;
 }

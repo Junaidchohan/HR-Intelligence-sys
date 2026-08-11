@@ -14,10 +14,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <Nav />
-        {/* AuthGuard checks the token on every route change and redirects
-            unauthenticated users to /login before rendering any protected content. */}
         <AuthGuard>
-          <main className="container fade-in">{children}</main>
+          {children}
         </AuthGuard>
         <Footer />
       </body>

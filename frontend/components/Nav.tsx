@@ -47,13 +47,13 @@ export default function Nav() {
   }
 
   const linkClass = (path: string) =>
-    `nav-link${pathname === path ? " active" : ""}`;
+    `nav-link text-base ${pathname === path ? " active" : ""}`;
 
   return (
-    <nav className="nav" ref={menuRef}>
+    <nav className="nav h-20 px-8" ref={menuRef} style={{ minHeight: "80px" }}>
       {/* ─── Brand ─────────────────────────────────────────────── */}
-      <Link href="/candidates" className="brand" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "8px" }}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent, #6366f1)", flexShrink: 0 }} aria-hidden="true">
+      <Link href={loggedIn ? "/candidates" : "/"} className="brand text-2xl font-bold" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "10px", fontSize: "1.5rem" }}>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent, #6366f1)", flexShrink: 0 }} aria-hidden="true">
           <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
           <path d="M12 6l-4 8h8z" />
           <path d="M8 14h8" />
@@ -64,7 +64,7 @@ export default function Nav() {
       {/* ─── Desktop links (hidden on mobile) ──────────────────── */}
       <div className="nav-links-desktop">
         {NAV_LINKS.map(({ href, label }) => (
-          <Link key={href} href={href} className={linkClass(href)}>
+          <Link key={href} href={href} className={linkClass(href)} style={{ fontSize: "1rem" }}>
             {label}
           </Link>
         ))}
@@ -76,16 +76,16 @@ export default function Nav() {
           <button
             className="secondary"
             onClick={logout}
-            style={{ fontSize: 12, padding: "6px 12px", margin: 0 }}
+            style={{ fontSize: 13, padding: "8px 16px", margin: 0 }}
           >
             Log out
           </button>
         ) : (
           <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-            <Link href="/login" className={linkClass("/login")}>
+            <Link href="/login" className={linkClass("/login")} style={{ fontSize: "1rem" }}>
               Log in
             </Link>
-            <Link href="/signup" className={linkClass("/signup")}>
+            <Link href="/signup" className={linkClass("/signup")} style={{ fontSize: "1rem" }}>
               Sign up
             </Link>
           </div>
@@ -101,13 +101,13 @@ export default function Nav() {
       >
         {menuOpen ? (
           /* X icon */
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 22 22" fill="none" aria-hidden="true">
             <line x1="4" y1="4" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             <line x1="18" y1="4" x2="4" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
         ) : (
           /* Hamburger icon */
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 22 22" fill="none" aria-hidden="true">
             <line x1="3" y1="6"  x2="19" y2="6"  stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             <line x1="3" y1="11" x2="19" y2="11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             <line x1="3" y1="16" x2="19" y2="16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -123,6 +123,7 @@ export default function Nav() {
               key={href}
               href={href}
               className={linkClass(href)}
+              style={{ fontSize: "1rem" }}
               onClick={() => setMenuOpen(false)}
             >
               {label}
@@ -141,6 +142,7 @@ export default function Nav() {
               <Link
                 href="/login"
                 className={linkClass("/login")}
+                style={{ fontSize: "1rem" }}
                 onClick={() => setMenuOpen(false)}
               >
                 Log in
@@ -148,6 +150,7 @@ export default function Nav() {
               <Link
                 href="/signup"
                 className={linkClass("/signup")}
+                style={{ fontSize: "1rem" }}
                 onClick={() => setMenuOpen(false)}
               >
                 Sign up
