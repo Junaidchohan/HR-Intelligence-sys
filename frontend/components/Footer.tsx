@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -7,9 +8,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           {/* Column 1: Brand */}
           <div className="flex flex-col items-center justify-start">
-            <h3 className="text-sm font-bold uppercase text-white tracking-wider mb-2">
-              Talentbase AI
-            </h3>
+            <Link href="/" className="mb-3">
+              <Image
+                src="/talentbase-logo.png"
+                alt="TalentBase AI"
+                width={100}
+                height={30}
+                className="w-[100px] h-auto object-contain"
+              />
+            </Link>
             <p className="text-sm text-gray-400">
               Secure AI-powered talent graph for enterprise search
             </p>
@@ -77,7 +84,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-white/5 mt-10 pt-6 text-center">
           <p className="text-sm text-gray-500">
-            &copy; 2026 Talentbase AI. All rights reserved.
+            &copy; 2026 TalentBase AI. All rights reserved.
           </p>
         </div>
       </div>

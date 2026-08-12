@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { clearToken, getToken } from "@/lib/api";
 
@@ -52,18 +53,15 @@ export default function Nav() {
   return (
     <nav className="nav h-20 px-8" ref={menuRef} style={{ minHeight: "80px" }}>
       {/* ─── Premium Logo Replacement ───────────────────────────── */}
-      <Link href={loggedIn ? "/candidates" : "/"} className="brand text-2xl font-bold" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "10px", fontSize: "1.5rem" }}>
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="mr-2">
-          <rect x="2" y="2" width="28" height="28" rx="6" stroke="url(#logoGradient)" strokeWidth="2" className="drop-shadow-[0_0_15px_rgba(124,58,237,0.5)]"/>
-          <defs>
-            <linearGradient id="logoGradient" x1="0" y1="0" x2="32" y2="32">
-              <stop offset="0%" stopColor="#a855f7"/>
-              <stop offset="100%" stopColor="#6366f1"/>
-            </linearGradient>
-          </defs>
-          <path d="M10 16L14 20L22 12" stroke="url(#logoGradient)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-        <span>Talentbase AI</span>
+      <Link href="/" className="brand flex items-center">
+        <Image
+          src="/talentbase-logo.png"
+          alt="TalentBase AI"
+          width={140}
+          height={40}
+          className="w-[140px] h-auto object-contain"
+          priority
+        />
       </Link>
 
       {/* ─── Desktop links (hidden on mobile) ──────────────────── */}
