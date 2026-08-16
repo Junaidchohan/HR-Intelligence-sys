@@ -34,7 +34,7 @@ services:
         sync: false
 
       - key: FRONTEND_URL
-        value: "https://hr-intelligence-sys-frontend.onrender.com"
+        value: "https://intelligence-sys-for-talent.onrender.com,https://hr-intelligence-sys-frontend.onrender.com"
 
   # ─── Frontend (Next.js — native Node.js, no Docker) ────────────────────────
   - type: web
@@ -52,8 +52,8 @@ services:
       # Baked in at build time — Next.js NEXT_PUBLIC_ vars must be set during
       # `next build` to be available in the browser bundle.
       - key: NEXT_PUBLIC_API_BASE_URL
-        value: "https://talentbase-ai-platform.onrender.com"
+        value: "https://hr-talent-intelligence-backend.onrender.com"
 
       # Also available at runtime for next.config.js rewrites (redundant but safe)
       - key: BACKEND_URL
-        value: "https://talentbase-ai-platform.onrender.com"
+        value: "https://hr-talent-intelligence-backend.onrender.com"

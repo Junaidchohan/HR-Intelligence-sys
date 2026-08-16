@@ -1,6 +1,6 @@
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://talentbase-ai-platform.onrender.com";
+  "https://hr-talent-intelligence-backend.onrender.com";
 
 
 export function getToken(): string | null {
