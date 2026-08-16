@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
 
     github_token: str | None = None
-    github_offline_fixtures: bool = False
+    github_offline_fixtures: bool = True
 
     anthropic_api_key: str | None = None
     screening_use_llm_summary: bool = False

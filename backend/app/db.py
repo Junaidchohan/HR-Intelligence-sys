@@ -34,6 +34,8 @@ def migrate_schema() -> None:
         ("job_requisitions", "priority",    "VARCHAR(32) DEFAULT 'Medium'"),
         ("job_requisitions", "status",      "VARCHAR(32) DEFAULT 'active'"),
         ("screenings", "confidence_score", "FLOAT"),
+        ("rubrics", "version", "INTEGER DEFAULT 1"),
+        ("rubrics", "parent_rubric_id", "INTEGER"),
     ]
     with engine.connect() as conn:
         for table, col, col_def in new_columns:

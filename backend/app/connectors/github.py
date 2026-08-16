@@ -81,8 +81,12 @@ class GitHubConnector(SourceConnector):
                 return self._load_fixture("users", clean_username)
             except FileNotFoundError:
                 pass
-        with httpx.Client(base_url=GITHUB_API_BASE, headers=self._headers(), timeout=10, verify=False) as client:
-            resp = client.get(f"/users/{clean_username}")
+        headers = self._headers()
+        with httpx.Client(base_url=GITHUB_API_BASE, timeout=10, verify=False) as client:
+            resp = client.get(f"/users/{clean_username}", headers=headers)
+            if resp.status_code == 401 and "Authorization" in headers:
+                # Retry unauthenticated
+                resp = client.get(f"/users/{clean_username}", headers={"Accept": "application/vnd.github+json"})
             resp.raise_for_status()
             return resp.json()
 
@@ -95,8 +99,11 @@ class GitHubConnector(SourceConnector):
             except FileNotFoundError:
                 pass
         try:
-            with httpx.Client(base_url=GITHUB_API_BASE, headers=self._headers(), timeout=10, verify=False) as client:
-                resp = client.get(f"/users/{clean_username}/repos", params={"per_page": 100, "sort": "updated"})
+            headers = self._headers()
+            with httpx.Client(base_url=GITHUB_API_BASE, timeout=10, verify=False) as client:
+                resp = client.get(f"/users/{clean_username}/repos", headers=headers, params={"per_page": 100, "sort": "updated"})
+                if resp.status_code == 401 and "Authorization" in headers:
+                    resp = client.get(f"/users/{clean_username}/repos", headers={"Accept": "application/vnd.github+json"}, params={"per_page": 100, "sort": "updated"})
                 if resp.status_code == 404:
                     return []
                 resp.raise_for_status()
@@ -117,8 +124,11 @@ class GitHubConnector(SourceConnector):
                 data = []
         else:
             try:
-                with httpx.Client(base_url=GITHUB_API_BASE, headers=self._headers(), timeout=10, verify=False) as client:
-                    resp = client.get(f"/users/{clean_username}/repos", params={"per_page": 100, "sort": "updated"})
+                headers = self._headers()
+                with httpx.Client(base_url=GITHUB_API_BASE, timeout=10, verify=False) as client:
+                    resp = client.get(f"/users/{clean_username}/repos", headers=headers, params={"per_page": 100, "sort": "updated"})
+                    if resp.status_code == 401 and "Authorization" in headers:
+                        resp = client.get(f"/users/{clean_username}/repos", headers={"Accept": "application/vnd.github+json"}, params={"per_page": 100, "sort": "updated"})
                     if resp.status_code == 404:
                         data = []
                     else:

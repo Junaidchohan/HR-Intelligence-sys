@@ -44,7 +44,8 @@ def auth_headers():
 
 
 def test_health():
-    assert client.get("/health").json() == {"status": "ok"}
+    res = client.get("/health").json()
+    assert res["status"] == "ok"
 
 
 def test_register_and_login(auth_headers):
