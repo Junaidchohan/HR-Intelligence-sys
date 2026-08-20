@@ -54,14 +54,9 @@ export default function Nav() {
     <nav className="nav h-20 px-8" ref={menuRef} style={{ minHeight: "80px" }}>
       {/* ─── Premium Logo Replacement ───────────────────────────── */}
       <Link href="/" className="brand flex items-center">
-        <Image
-          src="/talentbase-logo.png"
-          alt="TalentBase AI"
-          width={140}
-          height={40}
-          className="w-[140px] h-auto object-contain"
-          priority
-        />
+        <span className="font-extrabold text-2xl tracking-tight text-white">
+          TalentBase <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">AI</span>
+        </span>
       </Link>
 
       {/* ─── Desktop links (hidden on mobile) ──────────────────── */}

@@ -9,13 +9,9 @@ export default function Footer() {
           {/* Column 1: Brand */}
           <div className="flex flex-col items-center justify-start">
             <Link href="/" className="mb-3">
-              <Image
-                src="/talentbase-logo.png"
-                alt="TalentBase AI"
-                width={100}
-                height={30}
-                className="w-[100px] h-auto object-contain"
-              />
+              <span className="font-extrabold text-xl tracking-tight text-white">
+                TalentBase <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">AI</span>
+              </span>
             </Link>
             <p className="text-sm text-gray-400">
               Secure AI-powered talent graph for enterprise search
