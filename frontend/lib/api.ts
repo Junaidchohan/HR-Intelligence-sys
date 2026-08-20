@@ -1,6 +1,5 @@
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://hr-talent-intelligence-backend.onrender.com";
+// DEBUG: hardcoded for Render network debugging — revert to env var after diagnosis
+const API_BASE = "https://talentbase-ai-platform-y2ha.onrender.com";
 
 
 export function getToken(): string | null {
@@ -25,7 +24,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
   const fullUrl = `${API_BASE}${path}`;
-  console.log("Calling URL:", fullUrl);
+  console.log("Attempting to fetch:", fullUrl);
 
   try {
     const res = await fetch(fullUrl, { ...options, headers });
@@ -53,7 +52,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     if (res.status === 204 || text === "") return undefined as unknown as T;
     return JSON.parse(text) as T;
   } catch (error) {
-    console.error("Full Error Object:", error);
+    console.error("Full Fetch Error:", error);
     throw error;
   }
 }
