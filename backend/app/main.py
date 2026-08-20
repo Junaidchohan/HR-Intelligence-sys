@@ -16,7 +16,9 @@ from app.routers import auth, background, candidates, demand, jobs, screening, s
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
+    # Startup — log injected environment variables so Render deployments are easy to debug
+    print(f"[startup] BACKEND_URL  = {os.environ.get('BACKEND_URL', '(not set)')}")
+    print(f"[startup] GITHUB_TOKEN = {'***' if os.environ.get('GITHUB_TOKEN') else '(not set)'}")
     Base.metadata.create_all(bind=engine)
     migrate_schema()
     _ensure_admin_user()
@@ -33,15 +35,20 @@ _EXTRA_ORIGINS = [o.strip() for o in os.environ.get("FRONTEND_URL", "").split(",
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        # ── Local development ──────────────────────────────────────────────
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:8000",
         "http://127.0.0.1:8000",
-        "https://hr-intelligence-sys-one.vercel.app",        # Vercel production
-        "https://hr-intelligence-sys-frontend.onrender.com", # Render frontend
-        "https://intelligence-sys-for-talent.onrender.com",  # Render frontend (new)
-        "https://talentbase-ai-platform.onrender.com",
-        *_EXTRA_ORIGINS,  # Any extra domains via env (e.g. custom domain)
+        # ── Vercel ────────────────────────────────────────────────────────
+        "https://hr-intelligence-sys-one.vercel.app",
+        # ── Render frontend ───────────────────────────────────────────────
+        "https://hr-intelligence-sys-frontend.onrender.com",   # current frontend
+        "https://intelligence-sys-for-talent.onrender.com",    # new frontend
+        # ── Render backend (needed for same-origin API calls / health UI) ─
+        "https://talentbase-ai-platform-y2ha.onrender.com",    # current backend
+        # ── Extra origins injected via FRONTEND_URL env var ───────────────
+        *_EXTRA_ORIGINS,
     ],
     allow_credentials=True,
     allow_methods=["*"],
