@@ -5,11 +5,14 @@ Orchestrates: load candidate + evidence -> run rubric scoring (deterministic,
 see app/rubric/rubric.py) -> validate every skill claim used in scoring
 against evidence text via the citation validator -> optionally generate a
 short natural-language summary with Claude (only if ANTHROPIC_API_KEY is
-set; the numeric score/recommendation NEVER comes from the LLM, only the
-prose summary does, so screening results stay reproducible and auditable
-even when the LLM is unavailable).
+set as an env var OR stored via the /settings UI; the numeric
+score/recommendation NEVER comes from the LLM, only the prose summary does,
+so screening results stay reproducible and auditable even when the LLM is
+unavailable).
 
-Required environment variable for the optional LLM summary: ANTHROPIC_API_KEY
+API key resolution order (env var wins for cold-start speed):
+  1. ANTHROPIC_API_KEY / OPENAI_API_KEY env var (set on Render dashboard)
+  2. Encrypted value stored in IntegrationSettings DB table via /settings UI
 """
 from __future__ import annotations
 
@@ -20,7 +23,7 @@ from sqlalchemy.orm import Session
 from app.citation.validate import Citation, validate_batch
 from app.config import settings
 from app.core.audit import log_action
-from app.models import Candidate, Evidence, JobRequisition, Rubric as RubricModel, Screening
+from app.models import Candidate, Evidence, IntegrationSettings, JobRequisition, Rubric as RubricModel, Screening
 from app.rubric.rubric import Rubric, RubricCriterion, score_candidate
 
 
@@ -52,9 +55,45 @@ def _validate_citations(candidate: Candidate, evidence_list: list[Evidence], ski
     return round(valid / len(results), 4)
 
 
-def _llm_summary(candidate: Candidate, job: JobRequisition | None, score: float, recommendation: str) -> str | None:
+def _resolve_key(db: Session, env_key: str, db_field: str) -> str | None:
+    """Resolve an API key: env var first (fast path), then DB-stored encrypted value.
+
+    This bridges the gap between Render env vars and keys saved via the
+    /settings UI (which are stored encrypted in the IntegrationSettings table).
+
+    Args:
+        db:       SQLAlchemy session
+        env_key:  Name of the env var to check first (e.g. 'ANTHROPIC_API_KEY')
+        db_field: Column name on IntegrationSettings (e.g. 'encrypted_anthropic_api_key')
+    """
+    # Fast path: env var already present (set on Render dashboard / .env)
+    val = os.environ.get(env_key) or getattr(settings, env_key.lower(), None)
+    if val:
+        return val
+
+    # Slow path: look up any IntegrationSettings row that has the field populated
+    from app.core.encryption import decrypt_token
+    row = (
+        db.query(IntegrationSettings)
+        .filter(getattr(IntegrationSettings, db_field).isnot(None))
+        .first()
+    )
+    if row:
+        return decrypt_token(getattr(row, db_field))
+    return None
+
+
+def _llm_summary(
+    candidate: Candidate,
+    job: JobRequisition | None,
+    score: float,
+    recommendation: str,
+    db: Session | None = None,
+) -> str | None:
     """Generate an AI executive summary via Anthropic (primary) or OpenAI (fallback).
-    Returns None if neither key is configured, triggering the rule-based fallback.
+
+    API keys are resolved from env vars first, then the encrypted DB store.
+    Returns None if neither key is available, triggering the rule-based fallback.
     """
     if not settings.screening_use_llm_summary:
         return None
@@ -68,10 +107,11 @@ def _llm_summary(candidate: Candidate, job: JobRequisition | None, score: float,
     )
 
     # --- Primary: Anthropic Claude ---
-    if settings.anthropic_api_key:
+    anthropic_key = _resolve_key(db, "ANTHROPIC_API_KEY", "encrypted_anthropic_api_key") if db else settings.anthropic_api_key
+    if anthropic_key:
         try:
             import anthropic  # type: ignore
-            client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+            client = anthropic.Anthropic(api_key=anthropic_key)
             resp = client.messages.create(
                 model="claude-sonnet-4-6",
                 max_tokens=200,
@@ -79,14 +119,15 @@ def _llm_summary(candidate: Candidate, job: JobRequisition | None, score: float,
             )
             parts = [b.text for b in resp.content if getattr(b, "type", None) == "text"]
             return "\n".join(parts).strip() or None
-        except Exception as exc:  # pragma: no cover
+        except Exception:  # pragma: no cover
             pass  # fall through to OpenAI
 
     # --- Fallback: OpenAI ---
-    if settings.openai_api_key:
+    openai_key = _resolve_key(db, "OPENAI_API_KEY", "encrypted_openai_api_key") if db else settings.openai_api_key
+    if openai_key:
         try:
             import openai as openai_lib  # type: ignore
-            client = openai_lib.OpenAI(api_key=settings.openai_api_key)
+            client = openai_lib.OpenAI(api_key=openai_key)
             resp = client.chat.completions.create(
                 model="gpt-4o-mini",
                 max_tokens=200,
@@ -97,6 +138,7 @@ def _llm_summary(candidate: Candidate, job: JobRequisition | None, score: float,
             return f"(LLM summary unavailable: {exc})"
 
     return None  # No AI key configured — caller uses rule-based fallback
+
 
 
 def run_screening(db: Session, candidate_id: int, job_id: int | None = None, rubric_id: int | None = None, user_id: int | None = None) -> Screening:
@@ -179,7 +221,7 @@ def run_screening(db: Session, candidate_id: int, job_id: int | None = None, rub
 
     confidence_score = round(min(max(confidence_score, 0.0), 100.0), 1)
 
-    summary = _llm_summary(candidate, job, result.overall_score, result.recommendation)
+    summary = _llm_summary(candidate, job, result.overall_score, result.recommendation, db=db)
     if summary is None:
         top = ", ".join(cs.name for cs in result.criterion_scores if cs.raw_score >= 70) or "no criteria"
         summary = (
