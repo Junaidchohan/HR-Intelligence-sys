@@ -53,28 +53,50 @@ def _validate_citations(candidate: Candidate, evidence_list: list[Evidence], ski
 
 
 def _llm_summary(candidate: Candidate, job: JobRequisition | None, score: float, recommendation: str) -> str | None:
-    if not settings.screening_use_llm_summary or not settings.anthropic_api_key:
+    """Generate an AI executive summary via Anthropic (primary) or OpenAI (fallback).
+    Returns None if neither key is configured, triggering the rule-based fallback.
+    """
+    if not settings.screening_use_llm_summary:
         return None
-    try:
-        import anthropic  # type: ignore
 
-        client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-        job_title = job.title if job else "Custom Rubric"
-        prompt = (
-            f"Candidate: {candidate.full_name}. Skills: {', '.join(candidate.skills or [])}. "
-            f"Job: {job_title}. Overall rubric score: {score}/100 ({recommendation}). "
-            f"Write a 2-sentence factual screening summary for a recruiter. "
-            f"Do not invent skills or experience not listed above."
-        )
-        resp = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=200,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        parts = [b.text for b in resp.content if getattr(b, "type", None) == "text"]
-        return "\n".join(parts).strip() or None
-    except Exception as exc:  # pragma: no cover - network/credential dependent
-        return f"(LLM summary unavailable: {exc})"
+    job_title = job.title if job else "Custom Rubric"
+    prompt = (
+        f"Candidate: {candidate.full_name}. Skills: {', '.join(candidate.skills or [])}. "
+        f"Job: {job_title}. Overall rubric score: {score}/100 ({recommendation}). "
+        f"Write a 2-sentence factual screening summary for a recruiter. "
+        f"Do not invent skills or experience not listed above."
+    )
+
+    # --- Primary: Anthropic Claude ---
+    if settings.anthropic_api_key:
+        try:
+            import anthropic  # type: ignore
+            client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+            resp = client.messages.create(
+                model="claude-sonnet-4-6",
+                max_tokens=200,
+                messages=[{"role": "user", "content": prompt}],
+            )
+            parts = [b.text for b in resp.content if getattr(b, "type", None) == "text"]
+            return "\n".join(parts).strip() or None
+        except Exception as exc:  # pragma: no cover
+            pass  # fall through to OpenAI
+
+    # --- Fallback: OpenAI ---
+    if settings.openai_api_key:
+        try:
+            import openai as openai_lib  # type: ignore
+            client = openai_lib.OpenAI(api_key=settings.openai_api_key)
+            resp = client.chat.completions.create(
+                model="gpt-4o-mini",
+                max_tokens=200,
+                messages=[{"role": "user", "content": prompt}],
+            )
+            return resp.choices[0].message.content.strip() or None
+        except Exception as exc:  # pragma: no cover
+            return f"(LLM summary unavailable: {exc})"
+
+    return None  # No AI key configured — caller uses rule-based fallback
 
 
 def run_screening(db: Session, candidate_id: int, job_id: int | None = None, rubric_id: int | None = None, user_id: int | None = None) -> Screening:
@@ -161,7 +183,7 @@ def run_screening(db: Session, candidate_id: int, job_id: int | None = None, rub
     if summary is None:
         top = ", ".join(cs.name for cs in result.criterion_scores if cs.raw_score >= 70) or "no criteria"
         summary = (
-            f"Rule-based screen: {result.recommendation.replace('_', ' ')} "
+            f"Rule-based screen: {result.recommendation} "
             f"({result.overall_score}/100). Strongest on: {top}."
         )
 

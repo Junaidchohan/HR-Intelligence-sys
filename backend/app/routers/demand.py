@@ -112,23 +112,35 @@ def create_opportunity(
         raise HTTPException(status_code=400, detail="Role archetype is required")
 
     now_utc = datetime.datetime.utcnow()
-    band = payload.urgency_band or "Monitor"
 
-    if band == "Monitor":
-        first_seen = now_utc - datetime.timedelta(days=1)
-        days_open = 1
-    elif band == "Warming":
-        first_seen = now_utc - datetime.timedelta(days=7)
-        days_open = 7
-    elif band == "Action now":
-        first_seen = now_utc - datetime.timedelta(days=14)
-        days_open = 14
-    elif band == "Follow-up":
-        first_seen = now_utc - datetime.timedelta(days=20)
-        days_open = 20
+    # --- Resolve first_seen_at -------------------------------------------
+    # Priority order:
+    #  1. Explicit first_seen_at from request body (supports backdating for testing)
+    #  2. Derive from urgency_band preset
+    #  3. Default to now
+    if payload.first_seen_at is not None:
+        first_seen = payload.first_seen_at
+        days_open = max(0, (now_utc - first_seen).days)
+        band = compute_urgency_band(days_open)
+    elif payload.urgency_band and payload.urgency_band != "Monitor":
+        # Legacy path: urgency_band preset drives the date
+        band = payload.urgency_band
+        if band == "Warming":
+            first_seen = now_utc - datetime.timedelta(days=7)
+            days_open = 7
+        elif band == "Action now":
+            first_seen = now_utc - datetime.timedelta(days=14)
+            days_open = 14
+        elif band == "Follow-up":
+            first_seen = now_utc - datetime.timedelta(days=20)
+            days_open = 20
+        else:
+            first_seen = now_utc
+            days_open = 0
     else:
         first_seen = now_utc
         days_open = 0
+        band = "Monitor"
 
     opp = Opportunity(
         company_id=payload.company_id,

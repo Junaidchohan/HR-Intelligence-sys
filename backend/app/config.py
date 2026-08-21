@@ -12,10 +12,12 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
 
     github_token: str | None = None
-    github_offline_fixtures: bool = True
+    github_offline_fixtures: bool = False  # default online; set True only for local dev without creds
 
     anthropic_api_key: str | None = None
-    screening_use_llm_summary: bool = False
+    openai_api_key: str | None = None
+    # Auto-enable LLM summary when either AI key is injected; can override via env var
+    screening_use_llm_summary: bool = True
 
     admin_email: str = "admin@example.com"
     admin_password: str = "change-me-admin-password"

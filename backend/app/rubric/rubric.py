@@ -85,13 +85,18 @@ def _score_criterion(criterion: RubricCriterion, candidate_skills: set[str], evi
 
 
 def _recommendation_for(score: float) -> str:
+    """Maps overall score to spec-compliant colour verdict.
+
+    Thresholds per Cam's specification:
+      >= 80  → GREEN  (strong match)
+      60–79  → YELLOW (possible match / borderline)
+      < 60   → RED    (weak or no match)
+    """
     if score >= 80:
-        return "strong_match"
+        return "GREEN"
     if score >= 60:
-        return "possible_match"
-    if score >= 40:
-        return "weak_match"
-    return "not_a_match"
+        return "YELLOW"
+    return "RED"
 
 
 def score_candidate(rubric: Rubric, candidate_skills: list[str], evidence_count: int) -> ScoreResult:

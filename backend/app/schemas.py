@@ -187,7 +187,8 @@ class BatchScreenRequest(BaseModel):
 class OpportunityCreate(BaseModel):
     company_id: int
     role_archetype: str
-    urgency_band: Optional[str] = "Monitor"
+    urgency_band: Optional[str] = None
+    first_seen_at: Optional[datetime.datetime] = None  # override for testing/backfill
 
 
 class OpportunityOut(BaseModel):
