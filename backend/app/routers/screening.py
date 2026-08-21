@@ -14,6 +14,35 @@ from fastapi.responses import StreamingResponse
 
 router = APIRouter(prefix="/screenings", tags=["screening"])
 
+# ---------------------------------------------------------------------------
+# Spec-compliant verdict mapping (Cam's specification).
+# Normalises any internal labels (legacy or current) to GREEN/YELLOW/RED so
+# the response is always spec-compliant regardless of which rubric engine
+# version is cached on the running server.
+# ---------------------------------------------------------------------------
+_LEGACY_MAP = {
+    "strong_match":   "GREEN",
+    "possible_match": "YELLOW",
+    "weak_match":     "RED",
+    "not_a_match":    "RED",
+}
+
+
+def _normalize_verdict(screening: Screening) -> Screening:
+    """Ensure recommendation is GREEN/YELLOW/RED (spec-compliant)."""
+    rec = screening.recommendation or ""
+    if rec not in ("GREEN", "YELLOW", "RED"):
+        score = screening.overall_score or 0
+        if rec in _LEGACY_MAP:
+            screening.recommendation = _LEGACY_MAP[rec]
+        elif score >= 80:
+            screening.recommendation = "GREEN"
+        elif score >= 60:
+            screening.recommendation = "YELLOW"
+        else:
+            screening.recommendation = "RED"
+    return screening
+
 
 @router.post("", response_model=ScreeningOut)
 def screen(payload: ScreenRequest, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
@@ -21,7 +50,7 @@ def screen(payload: ScreenRequest, db: Session = Depends(get_db), user: User = D
         result = run_screening(db, payload.candidate_id, job_id=payload.job_id, rubric_id=payload.rubric_id, user_id=user.id)
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
-    return result
+    return _normalize_verdict(result)
 
 
 @router.get("/candidate/{candidate_id}", response_model=list[ScreeningOut])
