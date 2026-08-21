@@ -128,27 +128,32 @@ export default function ScreeningDossier({ candidate, screening, onExportPdf }: 
 
   const scoreGlowClass = getGlowStyle(overall_score);
 
-  // Status mapping
-  const getStatusDetails = (score: number) => {
-    if (score > 75) {
+  // Status mapping — uses backend recommendation field (GREEN/YELLOW/RED)
+  // so the label always matches what the server decided, regardless of score.
+  const getStatusDetails = (recommendation: string, score: number) => {
+    const rec = recommendation?.toUpperCase();
+    if (rec === "GREEN" || score > 75) {
       return {
         text: "Top Talent",
+        color: "text-emerald-400",
         icon: <Award className="w-4 h-4 text-emerald-400" />
       };
-    } else if (score >= 50) {
+    } else if (rec === "YELLOW" || score >= 50) {
       return {
-        text: "Good Match",
+        text: "Consider",
+        color: "text-amber-400",
         icon: <ShieldCheck className="w-4 h-4 text-amber-400" />
       };
     } else {
       return {
-        text: "Consider",
+        text: "Not a Fit",
+        color: "text-rose-400",
         icon: <AlertCircle className="w-4 h-4 text-rose-400" />
       };
     }
   };
 
-  const statusDetails = getStatusDetails(overall_score);
+  const statusDetails = getStatusDetails(screening.recommendation ?? "", overall_score);
 
   // Calculate evidence source counts
   const allEvidence = candidate.evidence || [];

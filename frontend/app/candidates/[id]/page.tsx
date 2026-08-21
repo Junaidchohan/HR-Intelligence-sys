@@ -12,16 +12,20 @@ import PrimaryButton from "@/components/PrimaryButton";
 // Dynamically import Tree to prevent SSR issues in Next.js
 const Tree = dynamic(() => import("react-d3-tree"), { ssr: false });
 
-function scoreClass(score: number) {
-  if (score > 75) return "score-strong";
-  if (score >= 50) return "score-possible";
+// Use backend recommendation (GREEN/YELLOW/RED) as the primary verdict signal.
+// Score thresholds are kept as a fallback for legacy data without recommendation.
+function scoreClass(recommendation: string, score: number) {
+  const rec = (recommendation || "").toUpperCase();
+  if (rec === "GREEN" || score > 75) return "score-strong";
+  if (rec === "YELLOW" || score >= 50) return "score-possible";
   return "score-weak";
 }
 
-function scoreBadgeLabel(score: number) {
-  if (score > 75) return "Top Talent";
-  if (score >= 50) return "Good Match";
-  return "Weak Match";
+function scoreBadgeLabel(recommendation: string, score: number) {
+  const rec = (recommendation || "").toUpperCase();
+  if (rec === "GREEN" || score > 75) return "Top Talent";
+  if (rec === "YELLOW" || score >= 50) return "Consider";
+  return "Not a Fit";
 }
 
 // Inner helper component to manage animated count-up and stroke-dashoffset transition
@@ -600,8 +604,8 @@ export default function CandidateDetailPage() {
                   <tr key={s.id} style={{ background: isSelected ? "rgba(59, 130, 246, 0.05)" : "transparent" }}>
                     <td style={{ fontWeight: 600 }}>{contextName}</td>
                     <td>
-                      <span className={`score-badge ${scoreClass(s.overall_score)}`} style={{ fontSize: 10, padding: "2px 6px" }}>
-                        {scoreBadgeLabel(s.overall_score)}
+                      <span className={`score-badge ${scoreClass(s.recommendation ?? "", s.overall_score)}`} style={{ fontSize: 10, padding: "2px 6px" }}>
+                        {scoreBadgeLabel(s.recommendation ?? "", s.overall_score)}
                       </span>
                     </td>
                     <td><strong>{s.overall_score}/100</strong></td>

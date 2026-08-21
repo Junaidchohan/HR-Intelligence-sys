@@ -69,6 +69,7 @@ def _resolve_key(db: Session, env_key: str, db_field: str) -> str | None:
     # Fast path: env var already present (set on Render dashboard / .env)
     val = os.environ.get(env_key) or getattr(settings, env_key.lower(), None)
     if val:
+        print(f"[Screening] Found {env_key} in environment: True", flush=True)
         return val
 
     # Slow path: look up any IntegrationSettings row that has the field populated
@@ -79,7 +80,12 @@ def _resolve_key(db: Session, env_key: str, db_field: str) -> str | None:
         .first()
     )
     if row:
-        return decrypt_token(getattr(row, db_field))
+        decrypted = decrypt_token(getattr(row, db_field))
+        found = bool(decrypted)
+        print(f"[Screening] Found {env_key} in DB settings: {found}", flush=True)
+        return decrypted
+
+    print(f"[Screening] Found {env_key}: False (not in env or DB)", flush=True)
     return None
 
 
@@ -94,16 +100,24 @@ def _llm_summary(
 
     API keys are resolved from env vars first, then the encrypted DB store.
     Returns None if neither key is available, triggering the rule-based fallback.
+    SCREENING_USE_LLM_SUMMARY is always treated as True — set it to False only
+    in test environments where you want deterministic output.
     """
-    if not settings.screening_use_llm_summary:
+    # Force-enable LLM summary regardless of config (can be overridden by env var
+    # SCREENING_USE_LLM_SUMMARY=false in edge cases)
+    use_llm = os.environ.get("SCREENING_USE_LLM_SUMMARY", "true").lower() != "false"
+    if not use_llm:
         return None
 
     job_title = job.title if job else "Custom Rubric"
     prompt = (
-        f"Candidate: {candidate.full_name}. Skills: {', '.join(candidate.skills or [])}. "
-        f"Job: {job_title}. Overall rubric score: {score}/100 ({recommendation}). "
-        f"Write a 2-sentence factual screening summary for a recruiter. "
-        f"Do not invent skills or experience not listed above."
+        f"Candidate: {candidate.full_name}. "
+        f"Skills: {', '.join(candidate.skills or [])}. "
+        f"Job: {job_title}. Overall rubric score: {score}/100 (verdict: {recommendation}). "
+        f"Write exactly 2 sentences for a recruiter: "
+        f"sentence 1 describes the candidate's strongest skills backed by evidence; "
+        f"sentence 2 identifies the key gap or risk. "
+        f"Be factual. Do not invent skills or experience not listed above."
     )
 
     # --- Primary: Anthropic Claude ---
@@ -118,9 +132,13 @@ def _llm_summary(
                 messages=[{"role": "user", "content": prompt}],
             )
             parts = [b.text for b in resp.content if getattr(b, "type", None) == "text"]
-            return "\n".join(parts).strip() or None
-        except Exception:  # pragma: no cover
-            pass  # fall through to OpenAI
+            text = "\n".join(parts).strip()
+            if text:
+                print(f"[Screening] AI summary generated via Anthropic Claude ({len(text)} chars)", flush=True)
+                return text
+        except Exception as exc:  # pragma: no cover
+            print(f"[Screening] Anthropic error: {exc}", flush=True)
+            # fall through to OpenAI
 
     # --- Fallback: OpenAI ---
     openai_key = _resolve_key(db, "OPENAI_API_KEY", "encrypted_openai_api_key") if db else settings.openai_api_key
@@ -133,11 +151,15 @@ def _llm_summary(
                 max_tokens=200,
                 messages=[{"role": "user", "content": prompt}],
             )
-            return resp.choices[0].message.content.strip() or None
+            text = resp.choices[0].message.content.strip()
+            if text:
+                print(f"[Screening] AI summary generated via OpenAI ({len(text)} chars)", flush=True)
+                return text
         except Exception as exc:  # pragma: no cover
-            return f"(LLM summary unavailable: {exc})"
+            print(f"[Screening] OpenAI error: {exc}", flush=True)
 
-    return None  # No AI key configured — caller uses rule-based fallback
+    print("[Screening] No AI key available — using analytical fallback summary", flush=True)
+    return None  # caller builds analytical fallback
 
 
 
@@ -223,10 +245,16 @@ def run_screening(db: Session, candidate_id: int, job_id: int | None = None, rub
 
     summary = _llm_summary(candidate, job, result.overall_score, result.recommendation, db=db)
     if summary is None:
-        top = ", ".join(cs.name for cs in result.criterion_scores if cs.raw_score >= 70) or "no criteria"
+        # Build a detailed analytical fallback with strengths and gaps
+        strong = [cs.name for cs in result.criterion_scores if cs.raw_score >= 70]
+        weak   = [cs.name for cs in result.criterion_scores if cs.raw_score < 60]
+        top_skills = ", ".join(candidate.skills[:5]) if candidate.skills else "no listed skills"
+        strength_text = f"strong performance in {', '.join(strong)}" if strong else "no criteria scoring above 70"
+        gap_text = f"gaps identified in {', '.join(weak)}" if weak else "no major scoring gaps"
         summary = (
-            f"Rule-based screen: {result.recommendation} "
-            f"({result.overall_score}/100). Strongest on: {top}."
+            f"{candidate.full_name or 'This candidate'} scores {result.overall_score}/100 ({result.recommendation}) "
+            f"with {strength_text}; primary skills include {top_skills}. "
+            f"Key assessment note: {gap_text} based on the rubric criteria applied."
         )
 
     screening = Screening(
